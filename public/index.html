@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Grocery Tracker</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="body-style">
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-title">Smart Grocery Tracker</div>
+      <div class="nav-links">
+        <a href="#dashboard" class="nav-link">Dashboard</a>
+        <a href="#pantry" class="nav-link">Pantry Inventory</a>
+        <a href="#grocery" class="nav-link">Grocery List</a>
+        <a href="#recipes" class="nav-link">Recipe Suggestions</a>
+      </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div id="content" class="main-container">
+      <!-- Dashboard Section -->
+      <section id="dashboard-section">
+        <h2 class="section-title">Hello, "PlaceHolder"!</h2>
+        <p class="section-description">
+          Here's a quick overview of your pantry and grocery list status:
+        </p>
+        <!-- Stats cards container -->
+        <div id="dashboard-stats" class="stats-grid">
+          <!-- Cards will be injected by JS -->
+        </div>
+        <!-- Low stock notice will be injected here by JS if applicable -->
+        <div id="low-stock-notice"></div>
+      </section>
+
+      <!-- Pantry Section -->
+      <section id="pantry-section" class="hidden">
+        <h2 class="section-title">Pantry Inventory</h2>
+        <!-- Add item form -->
+        <form id="pantry-add-form" class="form-container">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="pantry-item-name" class="form-label">Item Name</label>
+              <input
+                type="text"
+                id="pantry-item-name"
+                required
+                class="form-input"
+                placeholder="e.g., Banana"
+              />
+            </div>
+            <div class="form-field">
+              <label for="pantry-item-qty" class="form-label">Quantity</label>
+              <input
+                type="text"
+                id="pantry-item-qty"
+                required
+                class="form-input"
+                placeholder="e.g., 6 pcs"
+              />
+            </div>
+            <div class="form-field">
+              <label for="pantry-item-category" class="form-label"
+                >Category</label
+              >
+              <select id="pantry-item-category" class="form-input">
+                <option value="" disabled selected>Select category</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Produce">Produce</option>
+                <option value="Baking">Baking</option>
+                <option value="Meat">Meat</option>
+                <option value="Grains">Grains</option>
+                <option value="Spices">Spices</option>
+                <option value="Condiments">Condiments</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="form-button">Add Item</button>
+          </div>
+        </form>
+        <!-- Pantry items table -->
+        <div class="table-container">
+          <table class="styled-table">
+            <thead class="table-header">
+              <tr>
+                <th class="table-heading">Item</th>
+                <th class="table-heading">Quantity</th>
+                <th class="table-heading">Category</th>
+              </tr>
+            </thead>
+            <tbody id="pantry-table-body">
+              <!-- Rows will be injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Grocery Section -->
+      <section id="grocery-section" class="hidden">
+        <h2 class="section-title">Grocery List</h2>
+        <!-- Add grocery item form -->
+        <form id="grocery-add-form" class="form-container">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="grocery-item-name" class="form-label"
+                >Item Name</label
+              >
+              <input
+                type="text"
+                id="grocery-item-name"
+                required
+                class="form-input"
+                placeholder="e.g., Bread"
+              />
+            </div>
+            <div class="form-field">
+              <label for="grocery-item-qty" class="form-label">Quantity</label>
+              <input
+                type="text"
+                id="grocery-item-qty"
+                required
+                class="form-input"
+                placeholder="e.g., 2 loaves"
+              />
+            </div>
+            <button type="submit" class="form-button">Add Item</button>
+          </div>
+        </form>
+        <!-- Grocery items list -->
+        <ul id="grocery-list" class="list-container">
+          <!-- List items will be injected by JS -->
+        </ul>
+      </section>
+
+      <!-- Recipes Section -->
+      <section id="recipes-section" class="hidden">
+        <h2 class="section-title">Recipe Suggestions</h2>
+        <div id="recipes-container">
+          <!-- Recipe cards will be injected by JS -->
+        </div>
+      </section>
+    </div>
+    <!-- Client-side Script -->
+    <script src="scripts/script.js"></script>
+  </body>
+</html>
