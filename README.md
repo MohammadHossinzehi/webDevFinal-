@@ -2,6 +2,4 @@
 
 ## How to run
 
-Run this code in terminal:
-
-## node server.js
+## Run this code in terminal: node server.js
