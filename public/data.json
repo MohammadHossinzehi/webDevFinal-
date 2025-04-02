@@ -1,0 +1,119 @@
+{
+  "pantryItems": [
+    {
+      "name": "Milk",
+      "quantity": "1 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Eggs",
+      "quantity": "2 eggs",
+      "category": "Dairy"
+    },
+    {
+      "name": "Flour",
+      "quantity": "2 kg",
+      "category": "Baking"
+    },
+    {
+      "name": "Sugar",
+      "quantity": "1 kg",
+      "category": "Baking"
+    },
+    {
+      "name": "Salt",
+      "quantity": "1 pack",
+      "category": "Spices"
+    },
+    {
+      "name": "Olive Oil",
+      "quantity": "1 bottle",
+      "category": "Condiments"
+    },
+    {
+      "name": "Apples",
+      "quantity": "4",
+      "category": "Produce"
+    },
+    {
+      "name": "Broccoli",
+      "quantity": "1 head",
+      "category": "Produce"
+    },
+    {
+      "name": "Onion",
+      "quantity": "3",
+      "category": "Produce"
+    },
+    {
+      "name": "Chicken Breast",
+      "quantity": "4 pieces",
+      "category": "Meat"
+    }
+  ],
+  "groceryItems": [
+    {
+      "name": "Butter",
+      "quantity": "2 sticks",
+      "category": "Dairy"
+    },
+    {
+      "name": "Spaghetti Pasta",
+      "quantity": "2 packs",
+      "category": "Grains"
+    },
+    {
+      "name": "Ground Beef",
+      "quantity": "500 g",
+      "category": "Meat"
+    },
+    {
+      "name": "Tomato Sauce",
+      "quantity": "1 jar",
+      "category": "Condiments"
+    },
+    {
+      "name": "Soy Sauce",
+      "quantity": "1 bottle",
+      "category": "Condiments"
+    },
+    {
+      "name": "Bell Pepper",
+      "quantity": "2",
+      "category": "Produce"
+    }
+  ],
+  "recipes": [
+    {
+      "title": "Pancakes",
+      "ingredients": [
+        "Flour",
+        "Eggs",
+        "Milk",
+        "Sugar",
+        "Butter"
+      ]
+    },
+    {
+      "title": "Spaghetti Bolognese",
+      "ingredients": [
+        "Spaghetti Pasta",
+        "Ground Beef",
+        "Tomato Sauce",
+        "Onion",
+        "Olive Oil",
+        "Salt"
+      ]
+    },
+    {
+      "title": "Chicken Stir Fry",
+      "ingredients": [
+        "Chicken Breast",
+        "Broccoli",
+        "Bell Pepper",
+        "Soy Sauce",
+        "Salt"
+      ]
+    }
+  ]
+}

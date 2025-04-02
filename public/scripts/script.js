@@ -1,52 +1,3 @@
-// Dummy data for simulation
-const dummyPantryItems = [
-  { name: "Milk", quantity: "1 L", category: "Dairy" },
-  { name: "Eggs", quantity: "2 eggs", category: "Dairy" },
-  { name: "Flour", quantity: "2 kg", category: "Baking" },
-  { name: "Sugar", quantity: "1 kg", category: "Baking" },
-  { name: "Salt", quantity: "1 pack", category: "Spices" },
-  { name: "Olive Oil", quantity: "1 bottle", category: "Condiments" },
-  { name: "Apples", quantity: "4", category: "Produce" },
-  { name: "Broccoli", quantity: "1 head", category: "Produce" },
-  { name: "Onion", quantity: "3", category: "Produce" },
-  { name: "Chicken Breast", quantity: "4 pieces", category: "Meat" },
-];
-const dummyGroceryItems = [
-  { name: "Butter", quantity: "2 sticks", category: "Dairy" },
-  { name: "Spaghetti Pasta", quantity: "2 packs", category: "Grains" },
-  { name: "Ground Beef", quantity: "500 g", category: "Meat" },
-  { name: "Tomato Sauce", quantity: "1 jar", category: "Condiments" },
-  { name: "Soy Sauce", quantity: "1 bottle", category: "Condiments" },
-  { name: "Bell Pepper", quantity: "2", category: "Produce" },
-];
-const dummyRecipes = [
-  {
-    title: "Pancakes",
-    ingredients: ["Flour", "Eggs", "Milk", "Sugar", "Butter"],
-  },
-  {
-    title: "Spaghetti Bolognese",
-    ingredients: [
-      "Spaghetti Pasta",
-      "Ground Beef",
-      "Tomato Sauce",
-      "Onion",
-      "Olive Oil",
-      "Salt",
-    ],
-  },
-  {
-    title: "Chicken Stir Fry",
-    ingredients: [
-      "Chicken Breast",
-      "Broccoli",
-      "Bell Pepper",
-      "Soy Sauce",
-      "Salt",
-    ],
-  },
-];
-
 // State variables
 let pantryItems = [];
 let groceryItems = [];
@@ -55,52 +6,129 @@ let pantryLoaded = false;
 let groceryLoaded = false;
 let recipesLoaded = false;
 
-// Simulated fetch functions (using setTimeout to mimic AJAX delay)
-function fetchPantryItems() {
-  return new Promise((resolve) => {
-    if (pantryLoaded) {
-      // already loaded, resolve immediately
-      resolve(pantryItems);
-    } else {
-      console.log("Fetching pantry items...");
-      setTimeout(() => {
-        pantryItems = dummyPantryItems.slice(); // copy dummy data
-        pantryLoaded = true;
-        console.log("Pantry items loaded");
-        resolve(pantryItems);
-      }, 500);
-    }
+// Fetch data from JSON file
+function fetchData() {
+  return fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      pantryItems = data.pantryItems || [];
+      groceryItems = data.groceryItems || [];
+      recipeSuggestions = data.recipes || [];
+
+      pantryLoaded = true;
+      groceryLoaded = true;
+      recipesLoaded = true;
+
+      console.log("Data loaded successfully");
+    })
+    .catch((error) => {
+      console.error("Error loading data:", error);
+    });
+}
+
+// Function to send the data to the server
+function updateInventory(listType, newItem) {
+  fetch('/update-inventory', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      listType: listType,
+      item: newItem,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Inventory updated:', data);
+      // Optionally, refresh the UI to reflect changes
+      if (listType === 'pantry') {
+        renderPantry(data.updatedInventory.pantry);
+      } else if (listType === 'grocery') {
+        renderGrocery(data.updatedInventory.grocery);
+      }
+    })
+    .catch((error) => {
+      console.error('Error updating inventory:', error);
+    });
+}
+
+// Function to render pantry items (you can expand this to populate the pantry table)
+function renderPantry(pantry) {
+  const pantryTableBody = document.getElementById('pantry-table-body');
+  pantryTableBody.innerHTML = ''; // Clear current table content
+  pantry.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.quantity}</td>
+      <td>${item.category}</td>
+    `;
+    pantryTableBody.appendChild(row);
   });
 }
-function fetchGroceryItems() {
-  return new Promise((resolve) => {
-    if (groceryLoaded) {
-      resolve(groceryItems);
-    } else {
-      console.log("Fetching grocery list items...");
-      setTimeout(() => {
-        groceryItems = dummyGroceryItems.slice();
-        groceryLoaded = true;
-        console.log("Grocery list items loaded");
-        resolve(groceryItems);
-      }, 500);
-    }
+
+// Function to render grocery items (you can expand this to populate the grocery list)
+function renderGrocery(grocery) {
+  const groceryList = document.getElementById('grocery-list');
+  groceryList.innerHTML = ''; // Clear current list content
+  grocery.forEach(item => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${item.name} - ${item.quantity}`;
+    groceryList.appendChild(listItem);
   });
 }
-function fetchRecipeSuggestions() {
-  return new Promise((resolve) => {
-    if (recipesLoaded) {
-      resolve(recipeSuggestions);
-    } else {
-      console.log("Fetching recipe suggestions...");
-      setTimeout(() => {
-        recipeSuggestions = dummyRecipes.slice();
-        recipesLoaded = true;
-        console.log("Recipe suggestions loaded");
-        resolve(recipeSuggestions);
-      }, 700);
-    }
+
+// Render recipe suggestions
+function renderRecipes() {
+  const recipeList = document.getElementById("recipe-list");
+  recipeList.innerHTML = "";
+  recipeSuggestions.forEach((recipe) => {
+    const li = document.createElement("li");
+    li.textContent = `${recipe.title}: ${recipe.ingredients.join(", ")}`;
+    recipeList.appendChild(li);
   });
+}
+
+// Render dashboard
+function renderDashboard() {
+  document.getElementById("pantry-count").textContent = pantryItems.length;
+  document.getElementById("grocery-count").textContent = groceryItems.length;
+  document.getElementById("recipe-count").textContent = recipeSuggestions.length;
+}
+
+// Show the selected section
+function showSection(target) {
+  document.querySelectorAll("#content section").forEach((sec) => {
+    sec.classList.add("hidden");
+  });
+  document.querySelectorAll("nav a").forEach((a) => {
+    a.classList.remove("bg-blue-700");
+  });
+
+  const sectionId = `${target}-section`;
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  section.classList.remove("hidden");
+
+  const navLink = document.querySelector(`nav a[href="#${target}"]`);
+  if (navLink) {
+    navLink.classList.add("bg-blue-700");
+  }
+
+  if (!pantryLoaded || !groceryLoaded || !recipesLoaded) {
+    fetchData().then(() => {
+      if (target === "pantry") renderPantry();
+      if (target === "grocery") renderGrocery();
+      if (target === "recipes") renderRecipes();
+      if (target === "dashboard") renderDashboard();
+    });
+  } else {
+    if (target === "pantry") renderPantry();
+    if (target === "grocery") renderGrocery();
+    if (target === "recipes") renderRecipes();
+    if (target === "dashboard") renderDashboard();
+  }
 }
 
 // Helper: render functions for each section
@@ -176,68 +204,54 @@ function renderRecipes() {
     container.appendChild(card);
   });
 }
+
+
 function renderDashboard() {
   // Render stats cards
   const statsContainer = document.getElementById("dashboard-stats");
   statsContainer.innerHTML = "";
+
   // Pantry items count
   const pantryCard = document.createElement("div");
   pantryCard.className = "bg-white p-4 rounded-lg shadow text-center";
   pantryCard.innerHTML = `
-        <div class="text-sm text-gray-600 uppercase mb-1">Pantry Items</div>
-        <div class="text-2xl font-bold">${pantryItems.length}</div>
-    `;
+    <div class="text-sm text-gray-600 uppercase mb-1">Pantry Items</div>
+    <div class="text-2xl font-bold">${pantryItems.length}</div>
+  `;
   statsContainer.appendChild(pantryCard);
+
   // Grocery items count
   const groceryCard = document.createElement("div");
   groceryCard.className = "bg-white p-4 rounded-lg shadow text-center";
   groceryCard.innerHTML = `
-        <div class="text-sm text-gray-600 uppercase mb-1">Grocery Items</div>
-        <div class="text-2xl font-bold">${groceryItems.length}</div>
-    `;
+    <div class="text-sm text-gray-600 uppercase mb-1">Grocery Items</div>
+    <div class="text-2xl font-bold">${groceryItems.length}</div>
+  `;
   statsContainer.appendChild(groceryCard);
+
   // Recipe suggestions count
   const recipesCard = document.createElement("div");
   recipesCard.className = "bg-white p-4 rounded-lg shadow text-center";
   recipesCard.innerHTML = `
-        <div class="text-sm text-gray-600 uppercase mb-1">Recipes</div>
-        <div class="text-2xl font-bold">${dummyRecipes.length}</div>
-    `;
+    <div class="text-sm text-gray-600 uppercase mb-1">Recipes</div>
+    <div class="text-2xl font-bold">${recipeSuggestions.length}</div>
+  `;
   statsContainer.appendChild(recipesCard);
+
   // Low stock notice
   const noticeDiv = document.getElementById("low-stock-notice");
   noticeDiv.innerHTML = "";
+
   const lowItems = pantryItems.filter((item) => {
-    // Determine if item is low stock: countable items <=2
-    // If quantity is a number or has 'pieces'/'eggs' etc as unit
     let qtyStr = item.quantity.trim();
     let parts = qtyStr.split(" ");
     let qtyNum = parseInt(parts[0]);
     if (isNaN(qtyNum)) return false;
-    // If there's a unit
+
     if (parts.length > 1) {
       let unit = parts.slice(1).join(" ").toLowerCase();
-      // units that indicate count
-      const countUnits = [
-        "piece",
-        "pieces",
-        "pcs",
-        "egg",
-        "eggs",
-        "unit",
-        "units",
-      ];
-      // units that are full measure items
-      const measureUnits = [
-        "l",
-        "kg",
-        "g",
-        "pack",
-        "bottle",
-        "jar",
-        "head",
-        "loaf",
-      ];
+      const countUnits = ["piece", "pieces", "pcs", "egg", "eggs", "unit", "units"];
+      const measureUnits = ["l", "kg", "g", "pack", "bottle", "jar", "head", "loaf"];
       if (measureUnits.includes(unit)) {
         return false;
       }
@@ -245,13 +259,12 @@ function renderDashboard() {
         return qtyNum <= 2;
       }
     } else {
-      // no unit, just a number (like "4"), treat as count
       return qtyNum <= 2;
     }
     return false;
   });
+
   if (lowItems.length > 0) {
-    // List low item names and quantities
     const lowList = lowItems
       .map((it) => `${it.name} (${it.quantity} left)`)
       .join(", ");
@@ -310,33 +323,36 @@ function markItemBought(name) {
   // In a real app, we would also update backend (remove from grocery, add to pantry)
 }
 
-// Single-page navigation
 function showSection(target) {
   // Hide all sections
   document.querySelectorAll("#content section").forEach((sec) => {
     sec.classList.add("hidden");
   });
+
   // Remove active state from all nav links
   document.querySelectorAll("nav a").forEach((a) => {
     a.classList.remove("bg-blue-700");
   });
+
   // Show target section
   const sectionId = `${target}-section`;
   const section = document.getElementById(sectionId);
   if (!section) return;
   section.classList.remove("hidden");
+
   // Highlight the corresponding nav link
   const navLink = document.querySelector(`nav a[href="#${target}"]`);
   if (navLink) {
     navLink.classList.add("bg-blue-700");
   }
+
   // If target requires data, load it and render content
   if (target === "pantry") {
     if (!pantryLoaded) {
       // show loading message
       document.getElementById("pantry-table-body").innerHTML =
         '<tr><td class="px-4 py-2 text-sm text-gray-500" colspan="3">Loading pantry items...</td></tr>';
-      fetchPantryItems().then(() => {
+      fetchData().then(() => {
         renderPantry();
       });
     } else {
@@ -346,7 +362,7 @@ function showSection(target) {
     if (!groceryLoaded) {
       document.getElementById("grocery-list").innerHTML =
         '<li class="py-2 px-4 text-center text-gray-500">Loading grocery list...</li>';
-      fetchGroceryItems().then(() => {
+      fetchData().then(() => {
         renderGrocery();
       });
     } else {
@@ -356,12 +372,12 @@ function showSection(target) {
     // Ensure pantry loaded for accurate availability highlighting
     const tasks = [];
     if (!pantryLoaded) {
-      tasks.push(fetchPantryItems());
+      tasks.push(fetchData());
     }
     if (!recipesLoaded) {
       document.getElementById("recipes-container").innerHTML =
         '<p class="text-gray-500">Loading recipe suggestions...</p>';
-      tasks.push(fetchRecipeSuggestions());
+      tasks.push(fetchData());
     }
     Promise.all(tasks).then(() => {
       renderRecipes();
@@ -370,10 +386,10 @@ function showSection(target) {
     // Dashboard needs pantry & grocery data
     const tasks = [];
     if (!pantryLoaded) {
-      tasks.push(fetchPantryItems());
+      tasks.push(fetchData());
     }
     if (!groceryLoaded) {
-      tasks.push(fetchGroceryItems());
+      tasks.push(fetchData());
     }
     if (tasks.length > 0) {
       // If data needs to load, show loading state
@@ -441,4 +457,60 @@ window.addEventListener("hashchange", () => {
   if (target) {
     showSection(target);
   }
+});
+
+// Wait until the DOM is fully loaded before attaching event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  // Pantry form submission
+  document.getElementById("pantry-add-button").addEventListener("click", (event) => {
+    event.preventDefault();
+  
+    const itemName = document.getElementById("pantry-item-name").value;
+    const itemQty = document.getElementById("pantry-item-qty").value;
+    const itemCategory = document.getElementById("pantry-item-category").value;
+    console.log("Adding item:", itemName, itemQty, itemCategory); // Log values to debug
+
+    const newItem = {
+      name: itemName,
+      quantity: itemQty,
+      category: itemCategory,
+    };
+  
+    fetch("/update-inventory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        listType: "pantryItems",  // Use "grocery" if adding to grocery list
+        item: newItem,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Item added successfully:", data);
+        // Optionally, update the UI with the new item
+      })
+      .catch((error) => {
+        console.error("Error updating inventory:", error);
+      });
+  });
+
+  // Grocery form submission
+  document.getElementById('grocery-add-button').addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent form submission from refreshing the page
+
+    // Get the form data
+    const name = document.getElementById('grocery-item-name').value;
+    const qty = document.getElementById('grocery-item-qty').value;
+
+    // Create a new grocery item object
+    const newItem = {
+      name: name,
+      quantity: qty,
+    };
+
+    // Send the data to the backend to update the grocery list
+    updateInventory('grocery', newItem);
+  });
 });
