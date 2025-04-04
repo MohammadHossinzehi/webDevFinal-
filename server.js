@@ -74,8 +74,7 @@ const server = http.createServer((req, res) => {
             } else if (item) {
               inventoryData.groceryItems.push(item);
             }
-          }
-          
+          }          
 
           // Write updated data back to data.json
           fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), (err) => {
