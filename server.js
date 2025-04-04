@@ -40,7 +40,8 @@ const server = http.createServer((req, res) => {
 
     req.on("end", () => {
       try {
-        const { listType, item } = JSON.parse(body);
+        const reqBody = JSON.parse(body);
+        const { listType, item, updatedList } = reqBody;
         const filePath = path.join(publicDir, "data.json");
 
         fs.readFile(filePath, "utf8", (err, data) => {
@@ -62,10 +63,19 @@ const server = http.createServer((req, res) => {
 
           // Add item to the appropriate list
           if (listType === "pantry") {
-            inventoryData.pantryItems.push(item);
+            if (updatedList) {
+              inventoryData.pantryItems = updatedList;
+            } else if (item) {
+              inventoryData.pantryItems.push(item);
+            }
           } else if (listType === "grocery") {
-            inventoryData.groceryItems.push(item);
+            if (updatedList) {
+              inventoryData.groceryItems = updatedList;
+            } else if (item) {
+              inventoryData.groceryItems.push(item);
+            }
           }
+          
 
           // Write updated data back to data.json
           fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), (err) => {
@@ -87,6 +97,52 @@ const server = http.createServer((req, res) => {
 
     return; // End request handling for /update-inventory
   }
+  if (req.method === "POST" && requestPath === "/remove-grocery-item") {
+    let body = "";
+  
+    req.on("data", chunk => {
+      body += chunk;
+    });
+  
+    req.on("end", () => {
+      try {
+        const { name } = JSON.parse(body);
+        const filePath = path.join(publicDir, "data.json");
+  
+        fs.readFile(filePath, "utf8", (err, data) => {
+          if (err) {
+            res.writeHead(500, { "Content-Type": "text/plain" });
+            res.end("Error reading data.json");
+            return;
+          }
+  
+          let inventoryData = JSON.parse(data);
+          inventoryData.groceryItems = inventoryData.groceryItems.filter(
+            item => item.name !== name
+          );
+  
+          fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), err => {
+            if (err) {
+              res.writeHead(500, { "Content-Type": "text/plain" });
+              res.end("Error updating data.json");
+              return;
+            }
+  
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+              message: "Item removed",
+              updatedInventory: inventoryData
+            }));
+          });
+        });
+      } catch (err) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("Invalid request body");
+      }
+    });
+  
+    return;
+  }  
 
   // Serve static files
   const filePath = path.join(publicDir, requestPath);

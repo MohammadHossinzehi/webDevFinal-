@@ -41,13 +41,16 @@ function updateInventory(listType, newItem) {
     .then((response) => response.json())
     .then((data) => {
       console.log('Inventory updated:', data);
-      // Optionally, refresh the UI to reflect changes
       if (listType === 'pantry') {
-        renderPantry(data.updatedInventory.pantry);
+        pantryItems = data.updatedInventory.pantryItems;
+        renderPantry();
+        renderDashboard();
       } else if (listType === 'grocery') {
-        renderGrocery(data.updatedInventory.grocery);
+        groceryItems = data.updatedInventory.groceryItems;
+        renderGrocery();
+        renderDashboard();
       }
-    })
+    })    
     .catch((error) => {
       console.error('Error updating inventory:', error);
     });
@@ -141,13 +144,25 @@ function renderPantry() {
     tr.className =
       "border-b border-gray-200 last:border-b-0 " +
       (index % 2 ? "bg-gray-50" : "bg-white");
-    tr.innerHTML = `
-            <td class="px-4 py-2 text-sm">${item.name}</td>
-            <td class="px-4 py-2 text-sm">${item.quantity}</td>
-            <td class="px-4 py-2 text-sm">${item.category}</td>
-        `;
+      tr.innerHTML = `
+      <td class="px-4 py-2 text-sm">${item.name}</td>
+      <td class="px-4 py-2 text-sm">${item.quantity}</td>
+      <td class="px-4 py-2 text-sm">${item.category}</td>
+      <td class="px-4 py-2 text-sm">
+        <button class="edit-btn bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded" data-index="${index}">
+          ✏️ Edit
+        </button>
+      </td>
+    `;    
     tbody.appendChild(tr);
   });
+    // Attach click handlers to edit buttons
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const index = parseInt(btn.getAttribute("data-index"));
+        openEditForm(index);
+      });
+    });  
 }
 function renderGrocery() {
   const list = document.getElementById("grocery-list");
@@ -300,28 +315,99 @@ function addGroceryItem(name, quantity) {
   }
 }
 function removeGroceryItem(name) {
-  // Remove item from grocery list
-  groceryItems = groceryItems.filter((item) => item.name !== name);
-  renderGrocery();
-  if (
-    document
-      .getElementById("dashboard-section")
-      .classList.contains("hidden") === false
-  ) {
-    renderDashboard();
-  }
+  fetch("/remove-grocery-item", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name })
+  })
+    .then(res => res.json())
+    .then(data => {
+      groceryItems = data.updatedInventory.groceryItems;
+      renderGrocery();
+      renderDashboard();
+    })
+    .catch(err => {
+      console.error("Failed to remove grocery item:", err);
+    });
 }
+if (req.method === "POST" && requestPath === "/mark-item-bought") {
+  let body = "";
+
+  req.on("data", chunk => {
+    body += chunk;
+  });
+
+  req.on("end", () => {
+    try {
+      const { item } = JSON.parse(body);
+      const filePath = path.join(publicDir, "data.json");
+
+      fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Error reading data.json");
+          return;
+        }
+
+        let inventoryData = JSON.parse(data);
+        // Remove from groceryItems
+        inventoryData.groceryItems = inventoryData.groceryItems.filter(
+          i => i.name !== item.name
+        );
+
+        // Add to pantryItems (assign category or default to "Other")
+        item.category = item.category || "Other";
+        inventoryData.pantryItems.push(item);
+
+        fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), err => {
+          if (err) {
+            res.writeHead(500, { "Content-Type": "text/plain" });
+            res.end("Error writing data.json");
+            return;
+          }
+
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({
+            message: "Item moved to pantry",
+            updatedInventory: inventoryData
+          }));
+        });
+      });
+    } catch (err) {
+      res.writeHead(400, { "Content-Type": "text/plain" });
+      res.end("Invalid JSON");
+    }
+  });
+
+  return;
+}
+
 function markItemBought(name) {
-  // This simulates marking an item as bought: remove from grocery list and add to pantry
   const item = groceryItems.find((it) => it.name === name);
   if (!item) return;
-  removeGroceryItem(name);
-  // Decide category for new pantry item
-  let cat = item.category || "Other";
-  // If quantity is numeric or pieces, we can just add similarly
-  addPantryItem(item.name, item.quantity, cat);
-  // In a real app, we would also update backend (remove from grocery, add to pantry)
+
+  fetch("/mark-item-bought", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ item })
+  })
+    .then(res => res.json())
+    .then(data => {
+      groceryItems = data.updatedInventory.groceryItems;
+      pantryItems = data.updatedInventory.pantryItems;
+      renderGrocery();
+      renderPantry();
+      renderDashboard();
+    })
+    .catch(err => {
+      console.error("Failed to mark item as bought:", err);
+    });
 }
+
 
 function showSection(target) {
   // Hide all sections
@@ -489,7 +575,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Item added successfully:", data);
-        // Optionally, update the UI with the new item
+        pantryItems = data.updatedInventory.pantryItems;
+        renderPantry();
+        renderDashboard();  
       })
       .catch((error) => {
         console.error("Error updating inventory:", error);
