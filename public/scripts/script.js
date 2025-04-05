@@ -28,10 +28,10 @@ function fetchData() {
 
 // Function to send the data to the server
 function updateInventory(listType, newItem) {
-  fetch('/update-inventory', {
-    method: 'POST',
+  fetch("/update-inventory", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       listType: listType,
@@ -40,32 +40,18 @@ function updateInventory(listType, newItem) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log('Inventory updated:', data);
-      // Optionally, refresh the UI to reflect changes
-      if (listType === 'pantry') {
-        renderPantry(data.updatedInventory.pantry);
-      } else if (listType === 'grocery') {
-        renderGrocery(data.updatedInventory.grocery);
+      if (listType === "pantry") {
+        pantryItems = data.updatedInventory.pantry; // overwrite
+        renderPantry();
+      } else if (listType === "grocery") {
+        groceryItems = data.updatedInventory.grocery;
+        renderGrocery();
       }
+      renderDashboard();
     })
     .catch((error) => {
-      console.error('Error updating inventory:', error);
+      console.error("Error updating inventory:", error);
     });
-}
-
-// Function to render pantry items (you can expand this to populate the pantry table)
-function renderPantry(pantry) {
-  const pantryTableBody = document.getElementById('pantry-table-body');
-  pantryTableBody.innerHTML = ''; // Clear current table content
-  pantry.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.quantity}</td>
-      <td>${item.category}</td>
-    `;
-    pantryTableBody.appendChild(row);
-  });
 }
 
 // Function to render grocery items (you can expand this to populate the grocery list)
@@ -141,14 +127,60 @@ function renderPantry() {
     tr.className =
       "border-b border-gray-200 last:border-b-0 " +
       (index % 2 ? "bg-gray-50" : "bg-white");
-    tr.innerHTML = `
-            <td class="px-4 py-2 text-sm">${item.name}</td>
-            <td class="px-4 py-2 text-sm">${item.quantity}</td>
-            <td class="px-4 py-2 text-sm">${item.category}</td>
-        `;
+      tr.innerHTML = `
+      <td class="px-4 py-2 text-sm">${item.name}</td>
+      <td class="px-4 py-2 text-sm">${item.quantity}</td>
+      <td class="px-4 py-2 text-sm">${item.category}</td>
+      <td class="px-4 py-2 text-sm text-right">
+        <button class="text-blue-600 hover:underline text-sm edit-btn" data-index="${index}">Edit</button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = parseInt(btn.getAttribute("data-index"));
+      showEditForm(index);
+    });
+  });
 }
+function showEditForm(index) {
+  const item = pantryItems[index];
+  const tbody = document.getElementById("pantry-table-body");
+  const row = tbody.children[index];
+
+  row.innerHTML = `
+    <td><input type="text" class="form-input text-sm" value="${item.name}" id="edit-name-${index}"></td>
+    <td><input type="text" class="form-input text-sm" value="${item.quantity}" id="edit-qty-${index}"></td>
+    <td>
+      <select class="form-input text-sm" id="edit-cat-${index}">
+        ${["Dairy", "Produce", "Baking", "Meat", "Grains", "Spices", "Condiments", "Other"]
+          .map(cat => `<option value="${cat}" ${cat === item.category ? "selected" : ""}>${cat}</option>`)
+          .join("")}
+      </select>
+    </td>
+    <td class="text-right">
+      <button class="bg-green-600 text-white text-sm px-3 py-1 rounded mr-2 save-edit-btn" data-index="${index}">Save</button>
+      <button class="bg-gray-400 text-white text-sm px-3 py-1 rounded cancel-edit-btn" data-index="${index}">Cancel</button>
+    </td>
+  `;
+
+  row.querySelector(".save-edit-btn").addEventListener("click", () => {
+    const updatedItem = {
+      name: document.getElementById(`edit-name-${index}`).value.trim(),
+      quantity: document.getElementById(`edit-qty-${index}`).value.trim(),
+      category: document.getElementById(`edit-cat-${index}`).value,
+    };
+    pantryItems[index] = updatedItem;
+    updateInventory("pantry", updatedItem); // AJAX save
+    renderPantry();
+  });
+
+  row.querySelector(".cancel-edit-btn").addEventListener("click", () => {
+    renderPantry(); // Restore original view
+  });
+}
+
 function renderGrocery() {
   const list = document.getElementById("grocery-list");
   list.innerHTML = "";
@@ -274,31 +306,15 @@ function renderDashboard() {
 
 // Functions to handle adding/removing items
 function addPantryItem(name, quantity, category) {
-  // In a real app, here we'd send a request to backend to add the item
-  pantryItems.push({ name: name, quantity: quantity, category: category });
-  renderPantry();
-  // Also update dashboard stats if it's loaded
-  if (
-    document
-      .getElementById("dashboard-section")
-      .classList.contains("hidden") === false
-  ) {
-    renderDashboard();
-  }
+  const newItem = { name, quantity, category };
+  updateInventory("pantry", newItem);
 }
+
 function addGroceryItem(name, quantity) {
-  // In a real app, send to backend
-  groceryItems.push({ name: name, quantity: quantity });
-  renderGrocery();
-  // Optionally update dashboard stats if visible
-  if (
-    document
-      .getElementById("dashboard-section")
-      .classList.contains("hidden") === false
-  ) {
-    renderDashboard();
-  }
+  const newItem = { name, quantity };
+  updateInventory("grocery", newItem);
 }
+
 function removeGroceryItem(name) {
   // Remove item from grocery list
   groceryItems = groceryItems.filter((item) => item.name !== name);
@@ -482,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        listType: "pantryItems",  // Use "grocery" if adding to grocery list
+        listType: "pantry",  // Use "grocery" if adding to grocery list
         item: newItem,
       }),
     })

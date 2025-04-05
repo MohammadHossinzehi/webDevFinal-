@@ -62,10 +62,28 @@ const server = http.createServer((req, res) => {
 
           // Add item to the appropriate list
           if (listType === "pantry") {
-            inventoryData.pantryItems.push(item);
+            const existingIndex = inventoryData.pantryItems.findIndex(
+              (i) => i.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+
+            );
+          
+            if (existingIndex !== -1) {
+              inventoryData.pantryItems[existingIndex] = item; // update
+            } else {
+              inventoryData.pantryItems.push(item); // add new
+            }
           } else if (listType === "grocery") {
-            inventoryData.groceryItems.push(item);
+            const existingIndex = inventoryData.groceryItems.findIndex(
+              (i) => i.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+            );
+          
+            if (existingIndex !== -1) {
+              inventoryData.groceryItems[existingIndex] = item;
+            } else {
+              inventoryData.groceryItems.push(item);
+            }
           }
+          
 
           // Write updated data back to data.json
           fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), (err) => {
@@ -76,7 +94,13 @@ const server = http.createServer((req, res) => {
             }
 
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Inventory updated successfully" }));
+            res.end(JSON.stringify({
+              message: "Inventory updated successfully",
+              updatedInventory: {
+                pantry: inventoryData.pantryItems,
+                grocery: inventoryData.groceryItems
+              }
+            }));
           });
         });
       } catch (error) {

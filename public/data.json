@@ -2,7 +2,7 @@
   "pantryItems": [
     {
       "name": "Milk",
-      "quantity": "1 L",
+      "quantity": "4 L",
       "category": "Dairy"
     },
     {
@@ -49,6 +49,61 @@
       "name": "Chicken Breast",
       "quantity": "4 pieces",
       "category": "Meat"
+    },
+    {
+      "name": "Butter",
+      "quantity": "2 sticks",
+      "category": "Dairy"
+    },
+    {
+      "name": "Spaghetti Pasta",
+      "quantity": "2 packs",
+      "category": "Grains"
+    },
+    {
+      "name": "Butter",
+      "quantity": "2 sticks",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "2 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "2 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "3 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "4 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "4 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "3 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "3 L",
+      "category": "Dairy"
+    },
+    {
+      "name": "Milk",
+      "quantity": "0 L",
+      "category": "Dairy"
     }
   ],
   "groceryItems": [
@@ -81,6 +136,30 @@
       "name": "Bell Pepper",
       "quantity": "2",
       "category": "Produce"
+    },
+    {
+      "name": "",
+      "quantity": ""
+    },
+    {
+      "name": "Water",
+      "quantity": "1 Case"
+    },
+    {
+      "name": "Water",
+      "quantity": "1 Case"
+    },
+    {
+      "name": "Water",
+      "quantity": "1 Case"
+    },
+    {
+      "name": "Water",
+      "quantity": "1 Case"
+    },
+    {
+      "name": "Water",
+      "quantity": "1 case"
     }
   ],
   "recipes": [
