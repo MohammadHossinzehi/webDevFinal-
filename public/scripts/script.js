@@ -516,32 +516,39 @@ document.addEventListener("DOMContentLoaded", () => {
   // Pantry form submission
   document.getElementById("pantry-add-button").addEventListener("click", (event) => {
     event.preventDefault();
-  
-    const itemName = document.getElementById("pantry-item-name").value;
-    const itemQty = document.getElementById("pantry-item-qty").value;
+
+    const itemName = document.getElementById("pantry-item-name").value.trim();
+    const itemQty = document.getElementById("pantry-item-qty").value.trim();
     const itemCategory = document.getElementById("pantry-item-category").value;
-    console.log("Adding item:", itemName, itemQty, itemCategory); // Log values to debug
+
+    if (!itemName || !itemQty || !itemCategory) return;
 
     const newItem = {
       name: itemName,
       quantity: itemQty,
       category: itemCategory,
     };
-  
+
     fetch("/update-inventory", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        listType: "pantry",  // Use "grocery" if adding to grocery list
+        listType: "pantry",
         item: newItem,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Item added successfully:", data);
-        // Optionally, update the UI with the new item
+        pantryItems = data.updatedInventory.pantry;
+        renderPantry();
+        renderDashboard();
+
+        // Reset form fields
+        document.getElementById("pantry-item-name").value = "";
+        document.getElementById("pantry-item-qty").value = "";
+        document.getElementById("pantry-item-category").selectedIndex = 0;
       })
       .catch((error) => {
         console.error("Error updating inventory:", error);
@@ -549,20 +556,41 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Grocery form submission
-  document.getElementById('grocery-add-button').addEventListener("click", (e) => {
-    e.preventDefault(); // Prevent form submission from refreshing the page
+  document.getElementById("grocery-add-button").addEventListener("click", (e) => {
+    e.preventDefault();
 
-    // Get the form data
-    const name = document.getElementById('grocery-item-name').value;
-    const qty = document.getElementById('grocery-item-qty').value;
+    const name = document.getElementById("grocery-item-name").value.trim();
+    const qty = document.getElementById("grocery-item-qty").value.trim();
 
-    // Create a new grocery item object
+    if (!name || !qty) return;
+
     const newItem = {
       name: name,
       quantity: qty,
     };
 
-    // Send the data to the backend to update the grocery list
-    updateInventory('grocery', newItem);
+    fetch("/update-inventory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        listType: "grocery",
+        item: newItem,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        groceryItems = data.updatedInventory.grocery;
+        renderGrocery();
+        renderDashboard();
+
+        // Reset form fields
+        document.getElementById("grocery-item-name").value = "";
+        document.getElementById("grocery-item-qty").value = "";
+      })
+      .catch((error) => {
+        console.error("Error updating grocery list:", error);
+      });
   });
 });
