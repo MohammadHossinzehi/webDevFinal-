@@ -2,12 +2,12 @@
   "pantryItems": [
     {
       "name": "Milk",
-      "quantity": "4 L",
+      "quantity": "2 L",
       "category": "Dairy"
     },
     {
       "name": "Eggs",
-      "quantity": "2 eggs",
+      "quantity": "7 eggs",
       "category": "Dairy"
     },
     {
@@ -51,11 +51,6 @@
       "category": "Meat"
     },
     {
-      "name": "Butter",
-      "quantity": "2 sticks",
-      "category": "Dairy"
-    },
-    {
       "name": "Spaghetti Pasta",
       "quantity": "2 packs",
       "category": "Grains"
@@ -63,46 +58,6 @@
     {
       "name": "Butter",
       "quantity": "2 sticks",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "2 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "2 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "3 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "4 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "4 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "3 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "3 L",
-      "category": "Dairy"
-    },
-    {
-      "name": "Milk",
-      "quantity": "0 L",
       "category": "Dairy"
     }
   ],
@@ -144,22 +99,6 @@
     {
       "name": "Water",
       "quantity": "1 Case"
-    },
-    {
-      "name": "Water",
-      "quantity": "1 Case"
-    },
-    {
-      "name": "Water",
-      "quantity": "1 Case"
-    },
-    {
-      "name": "Water",
-      "quantity": "1 Case"
-    },
-    {
-      "name": "Water",
-      "quantity": "1 case"
     }
   ],
   "recipes": [
