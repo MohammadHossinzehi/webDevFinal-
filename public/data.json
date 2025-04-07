@@ -49,16 +49,6 @@
       "name": "Chicken Breast",
       "quantity": "4 pieces",
       "category": "Meat"
-    },
-    {
-      "name": "Spaghetti Pasta",
-      "quantity": "2 packs",
-      "category": "Grains"
-    },
-    {
-      "name": "Butter",
-      "quantity": "2 sticks",
-      "category": "Dairy"
     }
   ],
   "groceryItems": [
