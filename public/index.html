@@ -17,6 +17,7 @@
         <a href="#pantry" class="nav-link">Pantry Inventory</a>
         <a href="#grocery" class="nav-link">Grocery List</a>
         <a href="#recipes" class="nav-link">Recipe Suggestions</a>
+        <button onclick="logout()" class="form-button">Logout</button>
       </div>
     </nav>
 
@@ -24,7 +25,7 @@
     <div id="content" class="main-container">
       <!-- Dashboard Section -->
       <section id="dashboard-section">
-        <h2 class="section-title">Hello, "PlaceHolder"!</h2>
+        <h2 id="welcome-message" class="section-title">Hello!</h2>
         <p class="section-description">
           Here's a quick overview of your pantry and grocery list status:
         </p>
@@ -78,7 +79,9 @@
                 <option value="Other">Other</option>
               </select>
             </div>
-            <button id="pantry-add-button" type="submit" class="form-button">Add Item</button>
+            <button id="pantry-add-button" type="submit" class="form-button">
+              Add Item
+            </button>
           </div>
         </form>
         <!-- Pantry items table -->
@@ -126,7 +129,9 @@
                 placeholder="e.g., 2 loaves"
               />
             </div>
-            <button id="grocery-add-button"type="submit" class="form-button">Add Item</button>
+            <button id="grocery-add-button" type="submit" class="form-button">
+              Add Item
+            </button>
           </div>
         </form>
         <!-- Grocery items list -->

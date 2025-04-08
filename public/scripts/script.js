@@ -1,4 +1,3 @@
-// State variables
 let pantryItems = [];
 let groceryItems = [];
 let recipeSuggestions = [];
@@ -6,19 +5,38 @@ let pantryLoaded = false;
 let groceryLoaded = false;
 let recipesLoaded = false;
 
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+// Show username in welcome message
+const username = localStorage.getItem("username");
+if (username) {
+  const welcomeElement = document.getElementById("welcome-message");
+  if (welcomeElement) {
+    welcomeElement.textContent = `Hello, ${username}!`;
+  }
+  createUserDataFile(username);
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("username");
+  window.location.href = "login.html";
+}
+
 // Fetch data from JSON file
 function fetchData() {
-  return fetch("data.json")
+  const username = localStorage.getItem("username");
+  return fetch(`userData/${username}.json`)
     .then((response) => response.json())
     .then((data) => {
       pantryItems = data.pantryItems || [];
       groceryItems = data.groceryItems || [];
       recipeSuggestions = data.recipes || [];
-
       pantryLoaded = true;
       groceryLoaded = true;
       recipesLoaded = true;
-
       console.log("Data loaded successfully");
     })
     .catch((error) => {
@@ -26,75 +44,88 @@ function fetchData() {
     });
 }
 
+// Helper to create a new user data file
+function createUserDataFile(username) {
+  const defaultData = {
+    pantryItems: [],
+    groceryItems: [],
+    recipes: [
+      {
+        title: "Pancakes",
+        ingredients: ["Flour", "Eggs", "Milk", "Sugar", "Butter"],
+      },
+      {
+        title: "Spaghetti Bolognese",
+        ingredients: [
+          "Spaghetti Pasta",
+          "Ground Beef",
+          "Tomato Sauce",
+          "Onion",
+          "Olive Oil",
+          "Salt",
+        ],
+      },
+      {
+        title: "Chicken Stir Fry",
+        ingredients: [
+          "Chicken Breast",
+          "Broccoli",
+          "Bell Pepper",
+          "Soy Sauce",
+          "Salt",
+        ],
+      },
+    ],
+  };
+
+  return fetch(`/api/create-user-file`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, data: defaultData }),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to create user file");
+      return res.json();
+    })
+    .then((msg) => console.log(msg))
+    .catch((err) => console.error("Create file error:", err));
+}
 // Function to send the data to the server
 function updateInventory(listType, newItem) {
-  fetch('/update-inventory', {
-    method: 'POST',
+  const username = localStorage.getItem("username");
+  if (!username) return;
+
+  fetch("/update-inventory", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      listType: listType,
+      username,
+      listType,
       item: newItem,
     }),
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log('Inventory updated:', data);
-      // Optionally, refresh the UI to reflect changes
-      if (listType === 'pantry') {
-        renderPantry(data.updatedInventory.pantry);
-      } else if (listType === 'grocery') {
-        renderGrocery(data.updatedInventory.grocery);
-      }
+      console.log("Inventory updated:", data);
+      fetchData().then(() => {
+        if (listType === "pantry") renderPantry();
+        else if (listType === "grocery") renderGrocery();
+        renderDashboard();
+      });
     })
     .catch((error) => {
-      console.error('Error updating inventory:', error);
+      console.error("Error updating inventory:", error);
     });
-}
-
-// Function to render pantry items (you can expand this to populate the pantry table)
-function renderPantry(pantry) {
-  const pantryTableBody = document.getElementById('pantry-table-body');
-  pantryTableBody.innerHTML = ''; // Clear current table content
-  pantry.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.quantity}</td>
-      <td>${item.category}</td>
-    `;
-    pantryTableBody.appendChild(row);
-  });
-}
-
-// Function to render grocery items (you can expand this to populate the grocery list)
-function renderGrocery(grocery) {
-  const groceryList = document.getElementById('grocery-list');
-  groceryList.innerHTML = ''; // Clear current list content
-  grocery.forEach(item => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${item.name} - ${item.quantity}`;
-    groceryList.appendChild(listItem);
-  });
-}
-
-// Render recipe suggestions
-function renderRecipes() {
-  const recipeList = document.getElementById("recipe-list");
-  recipeList.innerHTML = "";
-  recipeSuggestions.forEach((recipe) => {
-    const li = document.createElement("li");
-    li.textContent = `${recipe.title}: ${recipe.ingredients.join(", ")}`;
-    recipeList.appendChild(li);
-  });
 }
 
 // Render dashboard
 function renderDashboard() {
   document.getElementById("pantry-count").textContent = pantryItems.length;
   document.getElementById("grocery-count").textContent = groceryItems.length;
-  document.getElementById("recipe-count").textContent = recipeSuggestions.length;
+  document.getElementById("recipe-count").textContent =
+    recipeSuggestions.length;
 }
 
 // Show the selected section
@@ -131,12 +162,10 @@ function showSection(target) {
   }
 }
 
-// Helper: render functions for each section
 function renderPantry() {
   const tbody = document.getElementById("pantry-table-body");
-  tbody.innerHTML = ""; // clear any existing rows
+  tbody.innerHTML = "";
   pantryItems.forEach((item, index) => {
-    // Create table row
     const tr = document.createElement("tr");
     tr.className =
       "border-b border-gray-200 last:border-b-0 " +
@@ -164,7 +193,6 @@ function renderGrocery() {
         `;
     list.appendChild(li);
   });
-  // Attach event handlers for newly added buttons
   document.querySelectorAll(".bought-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const name = btn.getAttribute("data-name");
@@ -184,7 +212,6 @@ function renderRecipes() {
   recipeSuggestions.forEach((recipe) => {
     const card = document.createElement("div");
     card.className = "mb-4 p-4 bg-white rounded shadow";
-    // Build ingredients list
     let ingredientsList = "";
     recipe.ingredients.forEach((ing) => {
       const hasItem = pantryItems.find(
@@ -205,13 +232,10 @@ function renderRecipes() {
   });
 }
 
-
 function renderDashboard() {
-  // Render stats cards
   const statsContainer = document.getElementById("dashboard-stats");
   statsContainer.innerHTML = "";
 
-  // Pantry items count
   const pantryCard = document.createElement("div");
   pantryCard.className = "bg-white p-4 rounded-lg shadow text-center";
   pantryCard.innerHTML = `
@@ -220,7 +244,6 @@ function renderDashboard() {
   `;
   statsContainer.appendChild(pantryCard);
 
-  // Grocery items count
   const groceryCard = document.createElement("div");
   groceryCard.className = "bg-white p-4 rounded-lg shadow text-center";
   groceryCard.innerHTML = `
@@ -229,7 +252,6 @@ function renderDashboard() {
   `;
   statsContainer.appendChild(groceryCard);
 
-  // Recipe suggestions count
   const recipesCard = document.createElement("div");
   recipesCard.className = "bg-white p-4 rounded-lg shadow text-center";
   recipesCard.innerHTML = `
@@ -238,7 +260,6 @@ function renderDashboard() {
   `;
   statsContainer.appendChild(recipesCard);
 
-  // Low stock notice
   const noticeDiv = document.getElementById("low-stock-notice");
   noticeDiv.innerHTML = "";
 
@@ -250,8 +271,25 @@ function renderDashboard() {
 
     if (parts.length > 1) {
       let unit = parts.slice(1).join(" ").toLowerCase();
-      const countUnits = ["piece", "pieces", "pcs", "egg", "eggs", "unit", "units"];
-      const measureUnits = ["l", "kg", "g", "pack", "bottle", "jar", "head", "loaf"];
+      const countUnits = [
+        "piece",
+        "pieces",
+        "pcs",
+        "egg",
+        "eggs",
+        "unit",
+        "units",
+      ];
+      const measureUnits = [
+        "l",
+        "kg",
+        "g",
+        "pack",
+        "bottle",
+        "jar",
+        "head",
+        "loaf",
+      ];
       if (measureUnits.includes(unit)) {
         return false;
       }
@@ -272,12 +310,9 @@ function renderDashboard() {
   }
 }
 
-// Functions to handle adding/removing items
 function addPantryItem(name, quantity, category) {
-  // In a real app, here we'd send a request to backend to add the item
   pantryItems.push({ name: name, quantity: quantity, category: category });
   renderPantry();
-  // Also update dashboard stats if it's loaded
   if (
     document
       .getElementById("dashboard-section")
@@ -287,10 +322,8 @@ function addPantryItem(name, quantity, category) {
   }
 }
 function addGroceryItem(name, quantity) {
-  // In a real app, send to backend
   groceryItems.push({ name: name, quantity: quantity });
   renderGrocery();
-  // Optionally update dashboard stats if visible
   if (
     document
       .getElementById("dashboard-section")
@@ -300,7 +333,6 @@ function addGroceryItem(name, quantity) {
   }
 }
 function removeGroceryItem(name) {
-  // Remove item from grocery list
   groceryItems = groceryItems.filter((item) => item.name !== name);
   renderGrocery();
   if (
@@ -312,44 +344,32 @@ function removeGroceryItem(name) {
   }
 }
 function markItemBought(name) {
-  // This simulates marking an item as bought: remove from grocery list and add to pantry
   const item = groceryItems.find((it) => it.name === name);
   if (!item) return;
   removeGroceryItem(name);
-  // Decide category for new pantry item
   let cat = item.category || "Other";
-  // If quantity is numeric or pieces, we can just add similarly
   addPantryItem(item.name, item.quantity, cat);
-  // In a real app, we would also update backend (remove from grocery, add to pantry)
 }
 
 function showSection(target) {
-  // Hide all sections
   document.querySelectorAll("#content section").forEach((sec) => {
     sec.classList.add("hidden");
   });
-
-  // Remove active state from all nav links
   document.querySelectorAll("nav a").forEach((a) => {
     a.classList.remove("bg-blue-700");
   });
-
-  // Show target section
   const sectionId = `${target}-section`;
   const section = document.getElementById(sectionId);
   if (!section) return;
   section.classList.remove("hidden");
 
-  // Highlight the corresponding nav link
   const navLink = document.querySelector(`nav a[href="#${target}"]`);
   if (navLink) {
     navLink.classList.add("bg-blue-700");
   }
 
-  // If target requires data, load it and render content
   if (target === "pantry") {
     if (!pantryLoaded) {
-      // show loading message
       document.getElementById("pantry-table-body").innerHTML =
         '<tr><td class="px-4 py-2 text-sm text-gray-500" colspan="3">Loading pantry items...</td></tr>';
       fetchData().then(() => {
@@ -369,7 +389,6 @@ function showSection(target) {
       renderGrocery();
     }
   } else if (target === "recipes") {
-    // Ensure pantry loaded for accurate availability highlighting
     const tasks = [];
     if (!pantryLoaded) {
       tasks.push(fetchData());
@@ -383,7 +402,6 @@ function showSection(target) {
       renderRecipes();
     });
   } else if (target === "dashboard") {
-    // Dashboard needs pantry & grocery data
     const tasks = [];
     if (!pantryLoaded) {
       tasks.push(fetchData());
@@ -392,20 +410,17 @@ function showSection(target) {
       tasks.push(fetchData());
     }
     if (tasks.length > 0) {
-      // If data needs to load, show loading state
       document.getElementById("dashboard-stats").innerHTML =
         '<p class="text-gray-500">Loading dashboard...</p>';
       Promise.all(tasks).then(() => {
         renderDashboard();
       });
     } else {
-      // Data already loaded
       renderDashboard();
     }
   }
 }
 
-// Event listeners for forms
 document
   .getElementById("pantry-add-form")
   .addEventListener("submit", (event) => {
@@ -419,7 +434,6 @@ document
     if (name && quantity) {
       addPantryItem(name, quantity, category);
     }
-    // Reset form
     nameInput.value = "";
     qtyInput.value = "";
     catSelect.selectedIndex = 0;
@@ -435,14 +449,11 @@ document
     if (name && quantity) {
       addGroceryItem(name, quantity);
     }
-    // Reset form
     nameInput.value = "";
     qtyInput.value = "";
   });
 
-// Initialize default view on page load
 window.addEventListener("load", () => {
-  // Show section based on URL hash, default to dashboard
   let initial = window.location.hash
     ? window.location.hash.substring(1)
     : "dashboard";
@@ -451,7 +462,6 @@ window.addEventListener("load", () => {
   }
   showSection(initial);
 });
-// Also handle hash change (if user uses browser back/forward)
 window.addEventListener("hashchange", () => {
   const target = window.location.hash.substring(1);
   if (target) {
@@ -459,58 +469,40 @@ window.addEventListener("hashchange", () => {
   }
 });
 
-// Wait until the DOM is fully loaded before attaching event listeners
 document.addEventListener("DOMContentLoaded", () => {
-  // Pantry form submission
-  document.getElementById("pantry-add-button").addEventListener("click", (event) => {
-    event.preventDefault();
-  
-    const itemName = document.getElementById("pantry-item-name").value;
-    const itemQty = document.getElementById("pantry-item-qty").value;
-    const itemCategory = document.getElementById("pantry-item-category").value;
-    console.log("Adding item:", itemName, itemQty, itemCategory); // Log values to debug
+  document
+    .getElementById("pantry-add-button")
+    .addEventListener("click", (event) => {
+      event.preventDefault();
 
-    const newItem = {
-      name: itemName,
-      quantity: itemQty,
-      category: itemCategory,
-    };
-  
-    fetch("/update-inventory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        listType: "pantryItems",  // Use "grocery" if adding to grocery list
-        item: newItem,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Item added successfully:", data);
-        // Optionally, update the UI with the new item
-      })
-      .catch((error) => {
-        console.error("Error updating inventory:", error);
-      });
-  });
+      const itemName = document.getElementById("pantry-item-name").value;
+      const itemQty = document.getElementById("pantry-item-qty").value;
+      const itemCategory = document.getElementById(
+        "pantry-item-category"
+      ).value;
 
-  // Grocery form submission
-  document.getElementById('grocery-add-button').addEventListener("click", (e) => {
-    e.preventDefault(); // Prevent form submission from refreshing the page
+      const newItem = {
+        name: itemName,
+        quantity: itemQty,
+        category: itemCategory,
+      };
 
-    // Get the form data
-    const name = document.getElementById('grocery-item-name').value;
-    const qty = document.getElementById('grocery-item-qty').value;
+      updateInventory("pantry", newItem);
+    });
 
-    // Create a new grocery item object
-    const newItem = {
-      name: name,
-      quantity: qty,
-    };
+  document
+    .getElementById("grocery-add-button")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
 
-    // Send the data to the backend to update the grocery list
-    updateInventory('grocery', newItem);
-  });
+      const name = document.getElementById("grocery-item-name").value;
+      const qty = document.getElementById("grocery-item-qty").value;
+
+      const newItem = {
+        name: name,
+        quantity: qty,
+      };
+
+      updateInventory("grocery", newItem);
+    });
 });

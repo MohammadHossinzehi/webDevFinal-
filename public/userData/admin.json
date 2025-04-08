@@ -1,0 +1,48 @@
+{
+  "pantryItems": [
+    {
+      "name": "milk",
+      "quantity": "1",
+      "category": "Dairy"
+    }
+  ],
+  "groceryItems": [
+    {
+      "name": "bread",
+      "quantity": "2 loaves"
+    }
+  ],
+  "recipes": [
+    {
+      "title": "Pancakes",
+      "ingredients": [
+        "Flour",
+        "Eggs",
+        "Milk",
+        "Sugar",
+        "Butter"
+      ]
+    },
+    {
+      "title": "Spaghetti Bolognese",
+      "ingredients": [
+        "Spaghetti Pasta",
+        "Ground Beef",
+        "Tomato Sauce",
+        "Onion",
+        "Olive Oil",
+        "Salt"
+      ]
+    },
+    {
+      "title": "Chicken Stir Fry",
+      "ingredients": [
+        "Chicken Breast",
+        "Broccoli",
+        "Bell Pepper",
+        "Soy Sauce",
+        "Salt"
+      ]
+    }
+  ]
+}
