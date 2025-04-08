@@ -7,7 +7,7 @@
     },
     {
       "name": "Eggs",
-      "quantity": "7 eggs",
+      "quantity": "7",
       "category": "Dairy"
     },
     {
@@ -83,10 +83,6 @@
       "category": "Produce"
     },
     {
-      "name": "",
-      "quantity": ""
-    },
-    {
       "name": "Water",
       "quantity": "1 Case"
     }
@@ -95,32 +91,32 @@
     {
       "title": "Pancakes",
       "ingredients": [
-        "Flour",
-        "Eggs",
-        "Milk",
-        "Sugar",
-        "Butter"
+        { "name": "Flour", "quantity": "1 cup" },
+        { "name": "Eggs", "quantity": "2" },
+        { "name": "Milk", "quantity": "1 cup" },
+        { "name": "Sugar", "quantity": "2 tbsp" },
+        { "name": "Butter", "quantity": "2 tbsp" }
       ]
     },
     {
       "title": "Spaghetti Bolognese",
       "ingredients": [
-        "Spaghetti Pasta",
-        "Ground Beef",
-        "Tomato Sauce",
-        "Onion",
-        "Olive Oil",
-        "Salt"
+        { "name": "Spaghetti Pasta", "quantity": "2 packs" },
+        { "name": "Ground Beef", "quantity": "500 g" },
+        { "name": "Tomato Sauce", "quantity": "1 jar" },
+        { "name": "Onion", "quantity": "1 onion" },
+        { "name": "Olive Oil", "quantity": "2 tbsp" },
+        { "name": "Salt", "quantity": "1 tsp" }
       ]
     },
     {
       "title": "Chicken Stir Fry",
       "ingredients": [
-        "Chicken Breast",
-        "Broccoli",
-        "Bell Pepper",
-        "Soy Sauce",
-        "Salt"
+        { "name": "Chicken Breast", "quantity": "2 pieces" },
+        { "name": "Broccoli", "quantity": "1 head" },
+        { "name": "Bell Pepper", "quantity": "2 peppers" },
+        { "name": "Soy Sauce", "quantity": "2 tbsp" },
+        { "name": "Salt", "quantity": "1 tsp" }
       ]
     }
   ]
