@@ -6,7 +6,7 @@ function renderDashboard() {
 
   // Pantry items count
   const pantryCard = document.createElement("div");
-  pantryCard.className = "bg-white p-4 rounded-lg shadow text-center";
+  pantryCard.className = "bg-white p-4 rounded-lg shadow-lg text-center";
   pantryCard.innerHTML = `
     <div class="text-sm text-gray-600 uppercase mb-1">Pantry Items</div>
     <div class="text-2xl font-bold">${pantryItems.length}</div>
@@ -15,7 +15,7 @@ function renderDashboard() {
 
   // Grocery items count
   const groceryCard = document.createElement("div");
-  groceryCard.className = "bg-white p-4 rounded-lg shadow text-center";
+  groceryCard.className = "bg-white p-4 rounded-lg shadow-lg text-center";
   groceryCard.innerHTML = `
     <div class="text-sm text-gray-600 uppercase mb-1">Grocery Items</div>
     <div class="text-2xl font-bold">${groceryItems.length}</div>
@@ -24,7 +24,7 @@ function renderDashboard() {
 
   // Recipe suggestions count
   const recipesCard = document.createElement("div");
-  recipesCard.className = "bg-white p-4 rounded-lg shadow text-center";
+  recipesCard.className = "bg-white p-4 rounded-lg shadow-lg text-center";
   recipesCard.innerHTML = `
     <div class="text-sm text-gray-600 uppercase mb-1">Recipes</div>
     <div class="text-2xl font-bold">${recipeSuggestions.length}</div>
