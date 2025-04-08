@@ -137,10 +137,38 @@
       <!-- Recipes Section -->
       <section id="recipes-section" class="hidden">
         <h2 class="section-title">Recipe Suggestions</h2>
-        <div id="recipes-container">
-          <!-- Recipe cards will be injected by JS -->
-        </div>
+
+        <!-- Add Recipe Form -->
+        <form id="recipe-add-form" class="form-container mb-6">
+          <h3 class="text-lg font-semibold mb-2">Add New Recipe</h3>
+          <div class="form-row">
+            <div class="form-field mb-2">
+              <label for="recipe-title" class="form-label">Recipe Title</label>
+              <input
+                type="text"
+                id="recipe-title"
+                required
+                class="form-input"
+                placeholder="Grilled Cheese"
+              />
+            </div>
+            <div class="form-field mb-2">
+              <label for="recipe-ingredients" class="form-label">Ingredients & Quantities</label>
+              <textarea
+                id="recipe-ingredients"
+                required
+                class="form-input"
+                placeholder="e.g., Bread: 2, Cheese: 1 cup, Salt: 1 pinch"
+              ></textarea>
+              <p class="text-xs text-gray-500 mt-1">Format: Name: Quantity, Name: Quantity</p>
+            </div>
+            <button id="recipe-add-button" type="submit" class="form-button">Add Recipe</button>
+          </div>
+        </form>
+
+        <div id="recipes-container"></div>
       </section>
+
     </div>
     <!-- Client-side Script -->
     <script src="scripts/main.js"></script>

@@ -29,12 +29,6 @@ function renderGrocery() {
   });
 }
 
-// Functions to handle grocery items
-function addGroceryItem(name, quantity) {
-  const newItem = { name, quantity };
-  updateInventory("grocery", newItem);
-}
-
 function removeGroceryItem(name) {
   groceryItems = groceryItems.filter((item) => item.name !== name);
   renderGrocery();

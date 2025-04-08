@@ -46,11 +46,36 @@ function updateInventory(listType, newItem) {
       } else if (listType === "grocery") {
         groceryItems = data.updatedInventory.grocery;
         renderGrocery();
-      }
+      } 
       renderDashboard();
     })
     .catch((error) => {
       console.error("Error updating inventory:", error);
+    });
+}
+
+// Function to send the data to the server
+function updateRecipe(listType, newRecipe) {
+  fetch("/update-inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      listType: listType,
+      item: newRecipe,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (listType === "recipes") {
+        recipeSuggestions = data.updatedInventory.recipes;
+        renderRecipes();
+      }
+      renderDashboard();
+    })
+    .catch((error) => {
+      console.error("Error updating recipe:", error);
     });
 }
 
@@ -130,8 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Grocery form submission
-  document.getElementById("grocery-add-button").addEventListener("click", (e) => {
-    e.preventDefault();
+  document.getElementById("grocery-add-button").addEventListener("click", (event) => {
+    event.preventDefault();
 
     const name = document.getElementById("grocery-item-name").value.trim();
     const qty = document.getElementById("grocery-item-qty").value.trim();
@@ -144,5 +169,27 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     updateInventory("grocery", newItem);
+  });
+
+  document.getElementById("recipe-add-button").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const title = document.getElementById("recipe-title").value.trim();
+    const ingredients = document.getElementById("recipe-ingredients").value.trim();
+
+    if (!title || !ingredients) return;
+  
+    const ingredientPairs = ingredients.split(",").map((entry) => entry.trim());
+    const ingredientsArray = ingredientPairs.map((pair) => {
+      const [name, quantity] = pair.split(":").map((s) => s.trim());
+      return { name, quantity };
+    });
+  
+    const newRecipe = {
+      title,
+      ingredients: ingredientsArray,
+    };
+  
+    updateRecipe("recipes", newRecipe);
   });
 });
