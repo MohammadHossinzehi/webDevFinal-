@@ -4,12 +4,17 @@
       "name": "Milk",
       "quantity": "3",
       "category": "Dairy"
+    },
+    {
+      "name": "Bread",
+      "quantity": "2 loaves",
+      "category": "Other"
     }
   ],
   "groceryItems": [
     {
-      "name": "bread",
-      "quantity": "2"
+      "name": "Bread",
+      "quantity": "10 loaves"
     }
   ],
   "recipes": [

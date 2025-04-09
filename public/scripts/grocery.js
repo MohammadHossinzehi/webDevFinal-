@@ -19,6 +19,7 @@ function renderGrocery() {
         li.innerHTML = `
           <span>${item.name} (${item.quantity})</span>
           <span>
+            <button class="mr-2 bg-green-500 hover:bg-green-600 text-white text-sm px-2 py-1 rounded bought-btn" data-index="${index}">Bought</button>
             <button class="bg-red-500 hover:bg-red-600 text-white text-sm px-2 py-1 rounded remove-btn" data-index="${index}">Remove</button>
           </span>
         `;
@@ -96,11 +97,34 @@ function markItemBought(index) {
   const item = groceryItems[index];
   if (!item) return;
 
-  removeGroceryItem(index);
+  // First, add the item to the pantry
+  const pantryItem = {
+    name: item.name,
+    quantity: item.quantity,
+    category: "Other",
+  };
 
-  let cat = item.category || "Other";
-  addPantryItem(item.name, item.quantity, cat);
+  fetch("/update-inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      listType: "pantry",
+      item: pantryItem,
+    }),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      // After pantry update succeeds, remove from grocery
+      removeGroceryItem(index);
+    })
+    .catch((err) => {
+      console.error("Error moving item to pantry:", err);
+    });
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   const groceryForm = document.getElementById("grocery-add-form");
   if (groceryForm) {
@@ -124,10 +148,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+  username = localStorage.getItem("username");
+  if (!username) {
+    console.error("Username not set. Redirecting to login...");
+    window.location.href = "/login.html";
+    return;
+  }
+
   renderPantry();
   renderGrocery();
   renderDashboard();
 });
+
 document.addEventListener("DOMContentLoaded", () => {
   const addButton = document.getElementById("grocery-add-button");
 
