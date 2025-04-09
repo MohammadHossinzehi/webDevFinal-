@@ -47,6 +47,8 @@
         </button>
       </div>
     </nav>
+      <!-- Time Display -->
+    <div id="current-time" class="text-sm text-gray-600 ml-4 mt-2"></div>
 
     <!-- Main content container -->
     <div id="content" class="main-container">
@@ -88,8 +90,7 @@
             </div>
             <div class="form-field">
               <label for="pantry-item-category" class="form-label"
-                >Category</label
-              >
+                >Category</label>
               <select id="pantry-item-category" class="form-input">
                 <option value="" disabled selected>Select category</option>
                 <option value="Dairy">Dairy</option>
@@ -101,6 +102,10 @@
                 <option value="Condiments">Condiments</option>
                 <option value="Other">Other</option>
               </select>
+            </div>
+            <div class="form-field">
+              <label for="pantry-item-expiry" class="form-label">Expiry Date</label>
+              <input type="date" id="pantry-item-expiry" class="form-input" />
             </div>
             <button id="pantry-add-button" type="submit" class="form-button">
               Add Item
@@ -115,6 +120,7 @@
                 <th class="table-heading">Item</th>
                 <th class="table-heading">Quantity</th>
                 <th class="table-heading">Category</th>
+                <th class="table-heading">Expiry Date</th>
                 <th class="table-heading">Actions</th>
               </tr>
             </thead>

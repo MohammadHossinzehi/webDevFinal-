@@ -3,7 +3,14 @@
     {
       "name": "bread",
       "quantity": "2 loaves",
-      "category": "Other"
+      "category": "Other",
+      "expiry": "2025-04-11"
+    },
+    {
+      "name": "eggs",
+      "quantity": "1",
+      "category": "Other",
+      "expiry": "2025-04-07"
     }
   ],
   "groceryItems": [],

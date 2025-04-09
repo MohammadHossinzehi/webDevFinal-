@@ -127,6 +127,7 @@ window.addEventListener("load", () => {
     initial = "dashboard";
   }
   showSection(initial);
+  startClockDisplay();
 });
 
 // Also handle hash change (if user uses browser back/forward)
@@ -157,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
         name: itemName,
         quantity: itemQty,
         category: itemCategory,
+        expiry: itemExpiry,
       };
 
       updateInventory("pantry", newItem);
@@ -209,3 +211,20 @@ document.addEventListener("DOMContentLoaded", () => {
       updateRecipe("recipes", newRecipe);
     });
 });
+function startClockDisplay() {
+  const clockEl = document.getElementById("current-time");
+  if (!clockEl) return;
+
+  function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    clockEl.textContent = `🕒 Current Time: ${timeString}`;
+  }
+
+  updateClock(); // initial call
+  setInterval(updateClock, 1000); // update every second
+}

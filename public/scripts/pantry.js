@@ -26,6 +26,7 @@ function renderPantry() {
           <td class="px-4 py-2 text-sm">${item.name}</td>
           <td class="px-4 py-2 text-sm">${item.quantity}</td>
           <td class="px-4 py-2 text-sm">${item.category}</td>
+          <td class="px-4 py-2 text-sm">${item.expiry || "—"}</td>
           <td class="px-4 py-2 text-sm text-right">
             <button class="text-blue-600 hover:underline text-sm edit-btn" data-index="${index}">Edit</button>
             <button class="text-red-600 hover:underline text-sm ml-2 remove-btn" data-index="${index}">Remove</button>
@@ -81,44 +82,37 @@ function showEditForm(index) {
   const row = tbody.children[index];
 
   row.innerHTML = `
-    <td><input type="text" class="form-input text-sm" value="${
-      item.name
-    }" id="edit-name-${index}"></td>
-    <td><input type="text" class="form-input text-sm" value="${
-      item.quantity
-    }" id="edit-qty-${index}"></td>
-    <td>
-      <select class="form-input text-sm" id="edit-cat-${index}">
-        ${[
-          "Dairy",
-          "Produce",
-          "Baking",
-          "Meat",
-          "Grains",
-          "Spices",
-          "Condiments",
-          "Other",
-        ]
-          .map(
-            (cat) =>
-              `<option value="${cat}" ${
-                cat === item.category ? "selected" : ""
-              }>${cat}</option>`
-          )
-          .join("")}
-      </select>
-    </td>
-    <td class="text-right">
-      <button class="bg-green-600 text-white text-sm px-3 py-1 rounded mr-2 save-edit-btn" data-index="${index}">Save</button>
-      <button class="bg-gray-400 text-white text-sm px-3 py-1 rounded cancel-edit-btn" data-index="${index}">Cancel</button>
-    </td>
-  `;
+  <td><input type="text" class="form-input text-sm" value="${item.name}" id="edit-name-${index}"></td>
+  <td><input type="text" class="form-input text-sm" value="${item.quantity}" id="edit-qty-${index}"></td>
+  <td>
+    <select class="form-input text-sm" id="edit-cat-${index}">
+      ${[
+        "Dairy", 
+        "Produce", 
+        "Baking", 
+        "Meat", 
+        "Grains", 
+        "Spices", 
+        "Condiments", 
+        "Other"]
+        .map(cat => `<option value="${cat}" ${cat === item.category ? "selected" : ""}>${cat}</option>`)
+        .join("")}
+    </select>
+  </td>
+  <td><input type="date" class="form-input text-sm" value="${item.expiry || ""}" id="edit-exp-${index}"></td>
+  <td class="text-right">
+    <button class="bg-green-600 text-white text-sm px-3 py-1 rounded mr-2 save-edit-btn" data-index="${index}">Save</button>
+    <button class="bg-gray-400 text-white text-sm px-3 py-1 rounded cancel-edit-btn" data-index="${index}">Cancel</button>
+  </td>
+`;
+
 
   row.querySelector(".save-edit-btn").addEventListener("click", () => {
     const updatedItem = {
       name: document.getElementById(`edit-name-${index}`).value.trim(),
       quantity: document.getElementById(`edit-qty-${index}`).value.trim(),
       category: document.getElementById(`edit-cat-${index}`).value,
+      expiry: document.getElementById(`edit-exp-${index}`).value,
     };
 
     // First, remove the original item
