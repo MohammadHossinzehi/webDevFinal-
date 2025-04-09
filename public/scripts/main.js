@@ -59,12 +59,6 @@ function updateRecipe(listType, newRecipe) {
   const username = localStorage.getItem("username");
   if (!username) return;
 
-  console.log("Sending to server:", {
-    username,
-    listType,
-    item: newRecipe,
-  });
-  
   fetch("/update-inventory", {
     method: "POST",
     headers: {
@@ -79,7 +73,6 @@ function updateRecipe(listType, newRecipe) {
     .then((response) => response.json())
     .then((data) => {
       if (listType === "recipes") {
-        console.log("Server response:", data);
         recipeSuggestions = data.updatedInventory.recipes;
         renderRecipes();
       }
@@ -212,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
         title,
         ingredients: ingredientsArray,
       };
-      console.log("Recipe Title:", title, "Ingredients Array:", ingredientsArray);
       
       updateRecipe("recipes", newRecipe);
     });
