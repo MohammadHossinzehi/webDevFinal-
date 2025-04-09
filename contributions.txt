@@ -6,4 +6,4 @@ Krishnan Uthayashangar 100896572:
 
 Timothy Weathers 100875602:
 
-Connor Snelgrove 100826574: 
+Connor Snelgrove 100826574: Connect frontend to backend via AJAX, Dynamic DOM for adding/editing pantry items, Real-time grocery list updates, Notifications for Expiry date/Expired Items
