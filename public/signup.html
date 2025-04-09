@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <!-- Tailwind CDN + Custom CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="body-style">
+    <div
+      class="main-container max-w-md mt-10 bg-white p-6 rounded-lg shadow-md"
+    >
+      <h2 class="section-title text-center mb-4">Sign Up</h2>
+      <form id="signupForm" class="form-container">
+        <div class="form-row">
+          <div class="form-field w-full">
+            <label for="new-username" class="form-label">Username</label>
+            <input
+              type="text"
+              id="new-username"
+              required
+              class="form-input"
+              placeholder="Choose a username"
+            />
+          </div>
+          <div class="form-field w-full">
+            <label for="new-password" class="form-label">Password</label>
+            <input
+              type="password"
+              id="new-password"
+              required
+              class="form-input"
+              placeholder="Create a password"
+            />
+          </div>
+        </div>
+        <button type="submit" class="form-button w-full mt-4">
+          Create Account
+        </button>
+        <p id="signupError" class="text-red-600 mt-2 text-center"></p>
+        <p id="signupSuccess" class="text-green-600 mt-2 text-center"></p>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const username = document.getElementById("new-username").value;
+          const password = document.getElementById("new-password").value;
+
+          try {
+            const res = await fetch("/api/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+            });
+
+            if (res.ok) {
+              document.getElementById("signupSuccess").textContent =
+                "Account created successfully!";
+              document.getElementById("signupError").textContent = "";
+              setTimeout(() => {
+                window.location.href = "login.html";
+              }, 1500);
+            } else if (res.status === 409) {
+              document.getElementById("signupError").textContent =
+                "Username already exists.";
+              document.getElementById("signupSuccess").textContent = "";
+            } else {
+              document.getElementById("signupError").textContent =
+                "Signup failed. Try again.";
+              document.getElementById("signupSuccess").textContent = "";
+            }
+          } catch (err) {
+            console.error("Signup error:", err);
+            document.getElementById("signupError").textContent =
+              "Server error.";
+            document.getElementById("signupSuccess").textContent = "";
+          }
+        });
+    </script>
+  </body>
+</html>
