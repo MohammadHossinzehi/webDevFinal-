@@ -1,53 +1,26 @@
 {
   "pantryItems": [
     {
-      "name": "Milk",
-      "quantity": "3",
-      "category": "Dairy"
-    },
-    {
-      "name": "Bread",
+      "name": "bread",
       "quantity": "2 loaves",
       "category": "Other"
     }
   ],
-  "groceryItems": [
-    {
-      "name": "Bread",
-      "quantity": "10 loaves"
-    }
-  ],
+  "groceryItems": [],
   "recipes": [
     {
-      "title": "Pancakes",
+      "title": "pancakes",
       "ingredients": [
-        "Flour",
-        "Eggs",
-        "Milk",
-        "Sugar",
-        "Butter"
-      ]
-    },
-    {
-      "title": "Spaghetti Bolognese",
-      "ingredients": [
-        "Spaghetti Pasta",
-        "Ground Beef",
-        "Tomato Sauce",
-        "Onion",
-        "Olive Oil",
-        "Salt"
-      ]
-    },
-    {
-      "title": "Chicken Stir Fry",
-      "ingredients": [
-        "Chicken Breast",
-        "Broccoli",
-        "Bell Pepper",
-        "Soy Sauce",
-        "Salt"
+        {
+          "name": "flour",
+          "quantity": "1 cup"
+        },
+        {
+          "name": "water",
+          "quantity": "2 cups"
+        }
       ]
     }
-  ]
+  ],
+  "username": "admin"
 }

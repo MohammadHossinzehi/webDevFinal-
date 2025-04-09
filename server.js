@@ -312,7 +312,9 @@ const server = http.createServer((req, res) => {
             userData.pantryItems.push(item);
           } else if (listType === "grocery") {
             userData.groceryItems.push(item);
-          } else {
+          } else if (listType === 'recipes') {
+            userData.recipes.push(item);
+          }else {
             res.writeHead(400, { "Content-Type": "application/json" });
             return res.end(JSON.stringify({ message: "Invalid list type" }));
           }
