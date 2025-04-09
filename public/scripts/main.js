@@ -18,7 +18,6 @@ function fetchData() {
       pantryLoaded = true;
       groceryLoaded = true;
       recipesLoaded = true;
-      console.log("Data loaded successfully");
     })
     .catch((error) => {
       console.error("Error loading data:", error);

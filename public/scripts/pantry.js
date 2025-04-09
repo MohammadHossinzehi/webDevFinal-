@@ -2,63 +2,77 @@
 let username = localStorage.getItem("username"); // Or however you're storing the logged-in user
 
 function renderPantry() {
-  const tbody = document.getElementById("pantry-table-body");
-  tbody.innerHTML = "";
+  fetch("/get-inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      pantryItems = data.pantry || [];
 
-  pantryItems.forEach((item, index) => {
-    const tr = document.createElement("tr");
-    tr.className =
-      "border-b border-gray-200 last:border-b-0 " +
-      (index % 2 ? "bg-gray-50" : "bg-white");
+      const tbody = document.getElementById("pantry-table-body");
+      tbody.innerHTML = "";
 
-    tr.innerHTML = `
-      <td class="px-4 py-2 text-sm">${item.name}</td>
-      <td class="px-4 py-2 text-sm">${item.quantity}</td>
-      <td class="px-4 py-2 text-sm">${item.category}</td>
-      <td class="px-4 py-2 text-sm text-right">
-        <button class="text-blue-600 hover:underline text-sm edit-btn" data-index="${index}">Edit</button>
-        <button class="text-red-600 hover:underline text-sm ml-2 remove-btn" data-index="${index}">Remove</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+      pantryItems.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        tr.className =
+          "border-b border-gray-200 last:border-b-0 " +
+          (index % 2 ? "bg-gray-50" : "bg-white");
 
-  document.querySelectorAll(".edit-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const index = parseInt(btn.getAttribute("data-index"));
-      showEditForm(index);
+        tr.innerHTML = `
+          <td class="px-4 py-2 text-sm">${item.name}</td>
+          <td class="px-4 py-2 text-sm">${item.quantity}</td>
+          <td class="px-4 py-2 text-sm">${item.category}</td>
+          <td class="px-4 py-2 text-sm text-right">
+            <button class="text-blue-600 hover:underline text-sm edit-btn" data-index="${index}">Edit</button>
+            <button class="text-red-600 hover:underline text-sm ml-2 remove-btn" data-index="${index}">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const index = parseInt(btn.getAttribute("data-index"));
+          showEditForm(index);
+        });
+      });
+
+      document.querySelectorAll(".remove-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const index = parseInt(btn.getAttribute("data-index"));
+          const item = pantryItems[index];
+
+          if (confirm(`Are you sure you want to remove this item"?`)) {
+            fetch("/remove-item", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username,
+                listType: "pantry",
+                index: index, // Send the index of the item
+              }),
+            })
+              .then((res) => res.json())
+              .then(() => {
+                renderPantry(); // Refresh from server
+                renderDashboard(); // Refresh dashboard
+              })
+              .catch((err) => {
+                console.error("Error removing item:", err);
+              });
+          }
+        });
+      });
+    })
+    .catch((err) => {
+      console.error("Error loading pantry:", console.log(err));
     });
-  });
-
-  document.querySelectorAll(".remove-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const index = parseInt(btn.getAttribute("data-index"));
-      const item = pantryItems[index];
-
-      if (confirm(`Are you sure you want to remove "${item.name}"?`)) {
-        fetch("/remove-item", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            listType: "pantry",
-            itemName: item.name,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            pantryItems = data.updatedInventory.pantry || [];
-            renderPantry();
-            renderDashboard();
-          })
-          .catch((err) => {
-            console.error("Error removing item:", err);
-          });
-      }
-    });
-  });
 }
 
 function showEditForm(index) {
@@ -106,13 +120,27 @@ function showEditForm(index) {
       quantity: document.getElementById(`edit-qty-${index}`).value.trim(),
       category: document.getElementById(`edit-cat-${index}`).value,
     };
-    pantryItems[index] = updatedItem;
-    updateInventory("pantry", updatedItem);
-    renderPantry();
-  });
 
-  row.querySelector(".cancel-edit-btn").addEventListener("click", () => {
-    renderPantry();
+    // First, remove the original item
+    fetch("/remove-item", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        listType: "pantry",
+        index: index,
+      }),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        // Then add the updated item
+        updateInventory("pantry", updatedItem);
+      })
+      .catch((err) => {
+        console.error("Error saving edited item:", err);
+      });
   });
 }
 
@@ -137,6 +165,7 @@ function updateInventory(listType, item) {
     .then((res) => res.json())
     .then((data) => {
       pantryItems.push(item); // OR refetch pantry if needed
+      renderPantry();
       renderDashboard();
     })
     .catch((err) => {

@@ -140,6 +140,134 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
+  // /get-inventory
+  // /get-inventory
+  if (req.method === "POST" && requestPath === "/get-inventory") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      try {
+        const { username } = JSON.parse(body);
+        if (!username) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ message: "Username is required" }));
+        }
+
+        const userFilePath = path.join(
+          publicDir,
+          "userData",
+          `${username}.json`
+        );
+
+        fs.readFile(userFilePath, "utf8", (err, data) => {
+          if (err) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ message: "User data not found" }));
+          }
+
+          try {
+            const userData = JSON.parse(data);
+            const pantry = userData.pantryItems || [];
+            const grocery = userData.groceryItems || [];
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ pantry, grocery }));
+          } catch (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "Invalid JSON in user file" }));
+          }
+        });
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid request format" }));
+      }
+    });
+    return;
+  }
+
+  // /remove-item
+  if (req.method === "POST" && requestPath === "/remove-item") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      try {
+        const { username, listType, index } = JSON.parse(body);
+        if (
+          typeof username !== "string" ||
+          typeof listType !== "string" ||
+          typeof index !== "number"
+        ) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ message: "Invalid request format" }));
+        }
+
+        const userFilePath = path.join(
+          publicDir,
+          "userData",
+          `${username}.json`
+        );
+
+        fs.readFile(userFilePath, "utf8", (err, data) => {
+          if (err) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ message: "User data not found" }));
+          }
+
+          let userData;
+          try {
+            userData = JSON.parse(data);
+          } catch {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            return res.end(
+              JSON.stringify({ message: "Invalid user data format" })
+            );
+          }
+
+          if (listType === "pantry" && Array.isArray(userData.pantryItems)) {
+            userData.pantryItems.splice(index, 1);
+          } else if (
+            listType === "grocery" &&
+            Array.isArray(userData.groceryItems)
+          ) {
+            userData.groceryItems.splice(index, 1);
+          } else {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(
+              JSON.stringify({ message: "Invalid list type or list missing" })
+            );
+          }
+
+          fs.writeFile(
+            userFilePath,
+            JSON.stringify(userData, null, 2),
+            (err) => {
+              if (err) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                return res.end(
+                  JSON.stringify({ message: "Failed to update user data" })
+                );
+              }
+
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({
+                  message: "Item removed successfully",
+                  updatedInventory: {
+                    pantry: userData.pantryItems,
+                    grocery: userData.groceryItems,
+                  },
+                })
+              );
+            }
+          );
+        });
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid JSON" }));
+      }
+    });
+    return;
+  }
 
   // /update-inventory
   if (req.method === "POST" && requestPath === "/update-inventory") {
@@ -240,7 +368,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   const url = `http://localhost:${PORT}/`;
-  console.log(`✅ Server running at ${url}`);
+  console.log(`Server running at ${url}`);
 
   const platform = process.platform;
   if (platform === "win32") {
