@@ -2,11 +2,11 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
-const createUserFileRoute = "/api/create-user-file";
+
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, "public");
 
-// Get content type based on file extension
+// Helper: Determine Content Type
 function getContentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   const map = {
@@ -24,9 +24,9 @@ function getContentType(filePath) {
 
 const server = http.createServer((req, res) => {
   const requestPath = req.url.split("?")[0];
-  const createUserFileRoute = "/api/create-user-file";
 
-  if (req.method === "POST" && requestPath === createUserFileRoute) {
+  // /api/create-user-file
+  if (req.method === "POST" && requestPath === "/api/create-user-file") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
     req.on("end", () => {
@@ -37,108 +37,31 @@ const server = http.createServer((req, res) => {
           return res.end(JSON.stringify({ message: "Invalid data" }));
         }
 
-        const userFilePath = path.join(
-          __dirname,
-          "public",
-          "userData",
-          `${username}.json`
-        );
-        fs.writeFile(userFilePath, JSON.stringify(data, null, 2), (err) => {
+        const filePath = path.join(publicDir, "userData", `${username}.json`);
+        if (fs.existsSync(filePath)) {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ message: "File already exists" }));
+        }
+
+        fs.writeFile(filePath, JSON.stringify(data, null, 2), (err) => {
           if (err) {
             res.writeHead(500, { "Content-Type": "application/json" });
             return res.end(
               JSON.stringify({ message: "Failed to create file" })
             );
           }
-
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: `File created for ${username}` }));
         });
-      } catch (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Server error creating file" }));
-      }
-    });
-    return;
-  }
-
-  // ✅ /update-inventory
-  if (req.method === "POST" && requestPath === "/update-inventory") {
-    let body = "";
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
-      try {
-        const { username, listType, item } = JSON.parse(body);
-        if (!username || !listType || !item) {
-          res.writeHead(400, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ message: "Missing data in request" }));
-          return;
-        }
-
-        const userFilePath = path.join(
-          publicDir,
-          "userData",
-          `${username}.json`
-        );
-
-        // Create file if it doesn't exist
-        fs.readFile(userFilePath, "utf8", (err, data) => {
-          let userData = {
-            pantryItems: [],
-            groceryItems: [],
-            recipes: [],
-            username: username,
-          };
-
-          if (!err && data) {
-            try {
-              userData = JSON.parse(data);
-            } catch {
-              // corrupted file fallback
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ message: "Corrupted user data file" }));
-              return;
-            }
-          }
-
-          // Add item to the correct list
-          if (listType === "pantry") {
-            userData.pantryItems.push(item);
-          } else if (listType === "grocery") {
-            userData.groceryItems.push(item);
-          } else {
-            res.writeHead(400, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Invalid list type" }));
-            return;
-          }
-
-          // Save updated data
-          fs.writeFile(
-            userFilePath,
-            JSON.stringify(userData, null, 2),
-            (err) => {
-              if (err) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Error saving user data" }));
-                return;
-              }
-
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(
-                JSON.stringify({ message: "Inventory updated successfully" })
-              );
-            }
-          );
-        });
-      } catch (error) {
+      } catch {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Invalid JSON data" }));
+        res.end(JSON.stringify({ message: "Invalid JSON" }));
       }
     });
     return;
   }
 
-  // ✅ /api/login
+  // /api/login
   if (req.method === "POST" && requestPath === "/api/login") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -150,135 +73,150 @@ const server = http.createServer((req, res) => {
         fs.readFile(loginFile, "utf8", (err, data) => {
           if (err) {
             res.writeHead(500, { "Content-Type": "text/plain" });
-            res.end("Error reading login file");
-            return;
+            return res.end("Error reading login file");
           }
 
-          // Add item to the appropriate list
-          if (listType === "pantry") {
-            const existingIndex = inventoryData.pantryItems.findIndex(
-              (i) => i.name.trim().toLowerCase() === item.name.trim().toLowerCase()
-
-            );
-          
-            if (existingIndex !== -1) {
-              inventoryData.pantryItems[existingIndex] = item; // update
-            } else {
-              inventoryData.pantryItems.push(item); // add new
-            }
-          } else if (listType === "grocery") {
-            const existingIndex = inventoryData.groceryItems.findIndex(
-              (i) => i.name.trim().toLowerCase() === item.name.trim().toLowerCase()
-            );
-          
-            if (existingIndex !== -1) {
-              inventoryData.groceryItems[existingIndex] = item;
-            } else {
-              inventoryData.groceryItems.push(item);
-            }
-          }
-          
-
-          let users = {};
-          if (data) {
-            users = JSON.parse(data);
-          }
-
-          if (users[username]) {
-            res.writeHead(409, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Username already exists" }));
-            return;
-          }
-
-          users[username] = password;
-
-          fs.writeFile(loginFile, JSON.stringify(users, null, 2), (err) => {
-            if (err) {
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(
-                JSON.stringify({ message: "Error writing to login file" })
-              );
-              return;
-            }
-
+          const users = JSON.parse(data);
+          if (users[username] && users[username] === password) {
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({
-              message: "Inventory updated successfully",
-              updatedInventory: {
-                pantry: inventoryData.pantryItems,
-                grocery: inventoryData.groceryItems
-              }
-            }));
-          });
+            res.end(JSON.stringify({ message: "Login successful" }));
+          } else {
+            res.writeHead(401, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "Invalid credentials" }));
+          }
         });
-      } catch (err) {
+      } catch {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Invalid request format" }));
       }
     });
     return;
   }
-  // Handle API endpoint for removing an item
-if (req.method === "POST" && requestPath === "/remove-item") {
-  let body = "";
 
-  req.on("data", chunk => {
-    body += chunk;
-  });
+  // /api/signup
+  if (req.method === "POST" && requestPath === "/api/signup") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      try {
+        const { username, password } = JSON.parse(body);
+        const loginFile = path.join(__dirname, "login.json");
 
-  req.on("end", () => {
-    try {
-      const { listType, itemName } = JSON.parse(body);
-      const filePath = path.join(publicDir, "data.json");
-
-      fs.readFile(filePath, "utf8", (err, data) => {
-        if (err) {
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("Error reading data.json");
-          return;
-        }
-
-        const inventoryData = JSON.parse(data);
-
-        if (listType === "pantry") {
-          inventoryData.pantryItems = inventoryData.pantryItems.filter(
-            (item) => item.name.trim().toLowerCase() !== itemName.trim().toLowerCase()
-          );
-        } else if (listType === "grocery") {
-          inventoryData.groceryItems = inventoryData.groceryItems.filter(
-            (item) => item.name.trim().toLowerCase() !== itemName.trim().toLowerCase()
-          );
-        }
-
-        fs.writeFile(filePath, JSON.stringify(inventoryData, null, 2), (err) => {
-          if (err) {
-            res.writeHead(500, { "Content-Type": "text/plain" });
-            res.end("Error saving data");
-            return;
+        fs.readFile(loginFile, "utf8", (err, data) => {
+          if (err && err.code !== "ENOENT") {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            return res.end(
+              JSON.stringify({ message: "Error reading login file" })
+            );
           }
 
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({
-            message: "Item removed successfully",
-            updatedInventory: {
-              pantry: inventoryData.pantryItems || [],
-              grocery: inventoryData.groceryItems || []
+          const users = data ? JSON.parse(data) : {};
+          if (users[username]) {
+            res.writeHead(409, { "Content-Type": "application/json" });
+            return res.end(
+              JSON.stringify({ message: "Username already exists" })
+            );
+          }
+
+          users[username] = password;
+          fs.writeFile(loginFile, JSON.stringify(users, null, 2), (err) => {
+            if (err) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              return res.end(
+                JSON.stringify({ message: "Error writing to login file" })
+              );
             }
-          }));
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({ message: "Account created successfully" })
+            );
+          });
         });
-      });
-    } catch (error) {
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end("Invalid request body");
-    }
-  });
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid request format" }));
+      }
+    });
+    return;
+  }
 
-  return;
-}
+  // /update-inventory
+  if (req.method === "POST" && requestPath === "/update-inventory") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      try {
+        const { username, listType, item } = JSON.parse(body);
+        if (!username || !listType || !item) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          return res.end(
+            JSON.stringify({ message: "Missing data in request" })
+          );
+        }
 
+        const userFilePath = path.join(
+          publicDir,
+          "userData",
+          `${username}.json`
+        );
 
-  // ✅ Serve static files
-  let filePath = path.join(
+        fs.readFile(userFilePath, "utf8", (err, data) => {
+          let userData = {
+            pantryItems: [],
+            groceryItems: [],
+            recipes: [],
+            username,
+          };
+
+          if (!err && data) {
+            try {
+              userData = JSON.parse(data);
+            } catch {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              return res.end(
+                JSON.stringify({ message: "Corrupted user data file" })
+              );
+            }
+          }
+
+          if (listType === "pantry") {
+            userData.pantryItems.push(item);
+          } else if (listType === "grocery") {
+            userData.groceryItems.push(item);
+          } else {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ message: "Invalid list type" }));
+          }
+
+          fs.writeFile(
+            userFilePath,
+            JSON.stringify(userData, null, 2),
+            (err) => {
+              if (err) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                return res.end(
+                  JSON.stringify({ message: "Error saving user data" })
+                );
+              }
+
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({ message: "Inventory updated successfully" })
+              );
+            }
+          );
+        });
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid JSON data" }));
+      }
+    });
+    return;
+  }
+
+  // Serve static files
+  const filePath = path.join(
     publicDir,
     requestPath === "/" || requestPath === "" ? "/index.html" : requestPath
   );
@@ -300,17 +238,16 @@ if (req.method === "POST" && requestPath === "/remove-item") {
   });
 });
 
-// ✅ Start the server
 server.listen(PORT, () => {
   const url = `http://localhost:${PORT}/`;
   console.log(`✅ Server running at ${url}`);
 
   const platform = process.platform;
   if (platform === "win32") {
-    exec(`start ${url}`); // Windows
+    exec(`start ${url}`);
   } else if (platform === "darwin") {
-    exec(`open ${url}`); // macOS
+    exec(`open ${url}`);
   } else {
-    exec(`xdg-open ${url}`); // Linux
+    exec(`xdg-open ${url}`);
   }
 });

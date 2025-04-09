@@ -2,14 +2,47 @@
   "pantryItems": [
     {
       "name": "milk",
+      "quantity": "3",
+      "category": "Dairy"
+    },
+    {
+      "name": "milk",
+      "quantity": "3",
+      "category": "Dairy"
+    },
+    {
+      "name": "milk",
+      "quantity": "7",
+      "category": "Dairy"
+    },
+    {
+      "name": "milk",
       "quantity": "1",
       "category": "Dairy"
+    },
+    {
+      "name": "milk",
+      "quantity": "1",
+      "category": "Dairy"
+    },
+    {
+      "name": "milk",
+      "quantity": "1",
+      "category": "Baking"
     }
   ],
   "groceryItems": [
     {
       "name": "bread",
-      "quantity": "2 loaves"
+      "quantity": "2"
+    },
+    {
+      "name": "bread",
+      "quantity": "2"
+    },
+    {
+      "name": "bread",
+      "quantity": "2"
     }
   ],
   "recipes": [

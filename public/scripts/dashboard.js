@@ -43,8 +43,25 @@ function renderDashboard() {
 
     if (parts.length > 1) {
       let unit = parts.slice(1).join(" ").toLowerCase();
-      const countUnits = ["piece", "pieces", "pcs", "egg", "eggs", "unit", "units"];
-      const measureUnits = ["l", "kg", "g", "pack", "bottle", "jar", "head", "loaf"];
+      const countUnits = [
+        "piece",
+        "pieces",
+        "pcs",
+        "egg",
+        "eggs",
+        "unit",
+        "units",
+      ];
+      const measureUnits = [
+        "l",
+        "kg",
+        "g",
+        "pack",
+        "bottle",
+        "jar",
+        "head",
+        "loaf",
+      ];
       if (measureUnits.includes(unit)) {
         return false;
       }

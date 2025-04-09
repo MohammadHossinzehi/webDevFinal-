@@ -5,26 +5,6 @@ let pantryLoaded = false;
 let groceryLoaded = false;
 let recipesLoaded = false;
 
-if (localStorage.getItem("isLoggedIn") !== "true") {
-  window.location.href = "login.html";
-}
-
-// Show username in welcome message
-const username = localStorage.getItem("username");
-if (username) {
-  const welcomeElement = document.getElementById("welcome-message");
-  if (welcomeElement) {
-    welcomeElement.textContent = `Hello, ${username}!`;
-  }
-  createUserDataFile(username);
-}
-
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("username");
-  window.location.href = "login.html";
-}
-
 // Fetch data from JSON file
 function fetchData() {
   const username = localStorage.getItem("username");

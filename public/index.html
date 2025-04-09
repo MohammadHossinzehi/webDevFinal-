@@ -2,23 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Grocery Tracker</title>
-    <link rel="icon" type="image/png" href="images/grocery-cart.png"/>
+    <link rel="icon" type="image/png" href="images/grocery-cart.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body class="body-style">
     <nav class="nav-bar">
       <div class="flex items-center">
-        <img src="images/grocery-cart.png" alt="Shopping Cart" class="h-8 w-8 mr-3" />
+        <img
+          src="images/grocery-cart.png"
+          alt="Shopping Cart"
+          class="h-8 w-8 mr-3"
+        />
         <div class="nav-title">Smart Grocery Tracker</div>
       </div>
       <div class="nav-links">
-        <a href="#dashboard" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125">Dashboard</a>
-        <a href="#pantry" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125">Pantry Inventory</a>
-        <a href="#grocery" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125">Grocery List</a>
-        <a href="#recipes" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125">Recipe Suggestions</a>
+        <a
+          href="#dashboard"
+          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
+          >Dashboard</a
+        >
+        <a
+          href="#pantry"
+          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
+          >Pantry Inventory</a
+        >
+        <a
+          href="#grocery"
+          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
+          >Grocery List</a
+        >
+        <a
+          href="#recipes"
+          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
+          >Recipe Suggestions</a
+        >
+        <button
+          onclick="logout()"
+          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
+        >
+          Logout
+        </button>
       </div>
     </nav>
 
@@ -157,28 +183,34 @@
               />
             </div>
             <div class="form-field mb-2">
-              <label for="recipe-ingredients" class="form-label">Ingredients & Quantities</label>
+              <label for="recipe-ingredients" class="form-label"
+                >Ingredients & Quantities</label
+              >
               <textarea
                 id="recipe-ingredients"
                 required
                 class="form-input"
                 placeholder="e.g., Bread: 2, Cheese: 1 cup, Salt: 1 pinch"
               ></textarea>
-              <p class="text-xs text-gray-500 mt-1">Format: Name: Quantity, Name: Quantity</p>
+              <p class="text-xs text-gray-500 mt-1">
+                Format: Name: Quantity, Name: Quantity
+              </p>
             </div>
-            <button id="recipe-add-button" type="submit" class="form-button">Add Recipe</button>
+            <button id="recipe-add-button" type="submit" class="form-button">
+              Add Recipe
+            </button>
           </div>
         </form>
 
         <div id="recipes-container"></div>
       </section>
-
     </div>
     <!-- Client-side Script -->
     <script src="scripts/main.js"></script>
     <script src="scripts/dashboard.js"></script>
-    <script  src="scripts/pantry.js"></script>
-    <script  src="scripts/grocery.js"></script>
+    <script src="scripts/pantry.js"></script>
+    <script src="scripts/grocery.js"></script>
     <script src="scripts/recipe.js"></script>
+    <script src="scripts/session.js"></script>
   </body>
 </html>

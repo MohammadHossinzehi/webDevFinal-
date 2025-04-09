@@ -1,6 +1,9 @@
+// Assume `username` is declared globally after login
+let username = localStorage.getItem("username"); // Or however you're storing the logged-in user
+
 function renderPantry() {
   const tbody = document.getElementById("pantry-table-body");
-  tbody.innerHTML = ""; // clear any existing rows
+  tbody.innerHTML = "";
 
   pantryItems.forEach((item, index) => {
     const tr = document.createElement("tr");
@@ -20,7 +23,6 @@ function renderPantry() {
     tbody.appendChild(tr);
   });
 
-  // Attach edit button listeners
   document.querySelectorAll(".edit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const index = parseInt(btn.getAttribute("data-index"));
@@ -28,7 +30,6 @@ function renderPantry() {
     });
   });
 
-  // Attach remove button listeners
   document.querySelectorAll(".remove-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const index = parseInt(btn.getAttribute("data-index"));
@@ -41,13 +42,14 @@ function renderPantry() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            username,
             listType: "pantry",
             itemName: item.name,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
-            pantryItems = data.updatedInventory.pantry;
+            pantryItems = data.updatedInventory.pantry || [];
             renderPantry();
             renderDashboard();
           })
@@ -65,12 +67,30 @@ function showEditForm(index) {
   const row = tbody.children[index];
 
   row.innerHTML = `
-    <td><input type="text" class="form-input text-sm" value="${item.name}" id="edit-name-${index}"></td>
-    <td><input type="text" class="form-input text-sm" value="${item.quantity}" id="edit-qty-${index}"></td>
+    <td><input type="text" class="form-input text-sm" value="${
+      item.name
+    }" id="edit-name-${index}"></td>
+    <td><input type="text" class="form-input text-sm" value="${
+      item.quantity
+    }" id="edit-qty-${index}"></td>
     <td>
       <select class="form-input text-sm" id="edit-cat-${index}">
-        ${["Dairy", "Produce", "Baking", "Meat", "Grains", "Spices", "Condiments", "Other"]
-          .map(cat => `<option value="${cat}" ${cat === item.category ? "selected" : ""}>${cat}</option>`)
+        ${[
+          "Dairy",
+          "Produce",
+          "Baking",
+          "Meat",
+          "Grains",
+          "Spices",
+          "Condiments",
+          "Other",
+        ]
+          .map(
+            (cat) =>
+              `<option value="${cat}" ${
+                cat === item.category ? "selected" : ""
+              }>${cat}</option>`
+          )
           .join("")}
       </select>
     </td>
@@ -92,12 +112,34 @@ function showEditForm(index) {
   });
 
   row.querySelector(".cancel-edit-btn").addEventListener("click", () => {
-    renderPantry(); 
+    renderPantry();
   });
 }
 
-// Functions to handle adding pantry items
 function addPantryItem(name, quantity, category) {
   const newItem = { name, quantity, category };
   updateInventory("pantry", newItem);
+}
+
+// Function to send update to server
+function updateInventory(listType, item) {
+  fetch("/update-inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      listType,
+      item,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      pantryItems.push(item); // OR refetch pantry if needed
+      renderDashboard();
+    })
+    .catch((err) => {
+      console.error("Error updating inventory:", err);
+    });
 }
