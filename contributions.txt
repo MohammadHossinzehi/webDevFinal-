@@ -1,6 +1,10 @@
 Justin Lau 100877853: Database, Server, Attaching database to frontend, Node.js
 
-Mohammad Hossinzehi 100874512:
+Mohammad Hossinzehi 100874512: 
+- Set up and configured the inital project server.
+- Designed and implemented frontend pages including index.html, styles.css, login.html, and signup.html.
+- Integrated login and signup functionality directly into the index page.
+- Established a structured data management system by creating and linking user data files to their respective JSON storage
 
 Krishnan Uthayashangar 100896572:
 
