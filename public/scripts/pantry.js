@@ -154,6 +154,7 @@ function updateInventory(listType, item) {
     .then((data) => {
       pantryItems.push(item); // OR refetch pantry if needed
       renderPantry();
+      canMake();
       renderDashboard();
     })
     .catch((err) => {

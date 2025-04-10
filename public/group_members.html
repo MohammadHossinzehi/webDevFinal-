@@ -6,14 +6,22 @@
     <title>Smart Grocery Tracker</title>
     <link rel="icon" type="image/png" href="images/grocery-cart.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="public/css/styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body class="body-style">
     <nav class="nav-bar">
       <div class="flex items-center">
+        <a href="index.html">
+          <img
+            src="images/grocery-cart.png"
+            alt="Shopping Cart"
+            class="h-8 w-8 mr-3"
+          />
+        </a>
         <div class="nav-title">Group Members</div>
       </div>
     </nav>
+    
 
     <!-- Main content container -->
     <div id="content" class="main-container">
@@ -26,7 +34,7 @@
                   <th class="table-heading">Student ID</th>
                 </tr>
               </thead>
-              <tbody id="pantry-table-body">
+              <tbody id="name-table">
                 <tr class="border-b border-gray-200 last:border-b-0 bg-white">
                     <td class="px-4 py-2 text-sm">Justin</td>
                     <td class="px-4 py-2 text-sm">Lau</td>

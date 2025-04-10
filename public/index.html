@@ -5,17 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Grocery Tracker</title>
     <link rel="icon" type="image/png" href="images/grocery-cart.png" />
+    <title>Sticky Footer</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body class="body-style">
     <nav class="nav-bar">
       <div class="flex items-center">
-        <img
-          src="images/grocery-cart.png"
-          alt="Shopping Cart"
-          class="h-8 w-8 mr-3"
-        />
+        <a href="index.html">
+          <img
+            src="images/grocery-cart.png"
+            alt="Shopping Cart"
+            class="h-8 w-8 mr-3"
+          />
+        </a>
         <div class="nav-title">Smart Grocery Tracker</div>
       </div>
       <div class="nav-links">
@@ -57,7 +61,17 @@
           Here's a quick overview of your pantry and grocery list status:
         </p>
         <div id="dashboard-stats" class="stats-grid"></div>
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Recipe Availability</h2>
+        <svg id="pieChart" width="300" height="300"></svg>
         <div id="low-stock-notice"></div>
+        <footer class="bg-gray-100 text-center py-4">
+          <p class="text-sm text-gray-600">
+            Created By 
+            <a href="group_members.html" class="text-blue-500 hover:underline">
+              Our Team
+            </a>
+          </p>
+        </footer>       
       </section>
 
       <!-- Pantry Section -->

@@ -141,7 +141,6 @@ const server = http.createServer((req, res) => {
     return;
   }
   // /get-inventory
-  // /get-inventory
   if (req.method === "POST" && requestPath === "/get-inventory") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -169,9 +168,10 @@ const server = http.createServer((req, res) => {
             const userData = JSON.parse(data);
             const pantry = userData.pantryItems || [];
             const grocery = userData.groceryItems || [];
+            const recipe = userData.recipes || [];
 
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ pantry, grocery }));
+            res.end(JSON.stringify({ pantry, grocery, recipe }));
           } catch (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ message: "Invalid JSON in user file" }));

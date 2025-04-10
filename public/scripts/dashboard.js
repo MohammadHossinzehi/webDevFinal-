@@ -89,3 +89,86 @@ function renderDashboard() {
     `;
   }
 }
+
+async function canMake() {
+  let recipes = [];
+  let pantryItems = [];
+
+  try {
+    const response = await fetch("/get-inventory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    const data = await response.json();
+    recipes = data.recipe;
+    pantryItems = data.pantry;
+  } catch (error) {
+    console.error("Failed to fetch inventory:", error);
+    return;
+  }
+ 
+  const pantrySet = new Set(pantryItems);
+  let canMake = 0;
+
+  recipes.forEach((recipe) => {
+    let canMakeRecipe = true;
+    recipe.ingredients.forEach((ingredient) => {
+      const foundInPantry = pantryItems.some((item) => 
+        item.name.toLowerCase() === ingredient.name.toLowerCase()
+      );
+      if (!foundInPantry) {
+        canMakeRecipe = false;
+      }
+    });
+    if (canMakeRecipe) canMake++;
+  });
+  
+  const cantMake = recipes.length - canMake;
+
+  const chartData = [
+    { label: "Makeable", value: canMake },
+    { label: "Not Makeable", value: cantMake },
+  ];
+
+  const width = 300;
+  const height = 300;
+  const radius = Math.min(width, height) / 2;
+
+  const svg = d3.select("#pieChart");
+  svg.selectAll("*").remove();
+
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  const color = d3.scaleOrdinal()
+    .domain(chartData.map((d) => d.label))
+    .range(["#10b981", "#ef4444"]); 
+
+  const pie = d3.pie().value((d) => d.value);
+  const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+  const arcs = g.selectAll("arc")
+    .data(pie(chartData))
+    .enter()
+    .append("g");
+
+  arcs.append("path")
+    .attr("d", arc)
+    .attr("fill", (d) => color(d.data.label));
+
+  arcs.append("text")
+    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#fff")
+    .attr("font-size", "14px")
+    .text((d) => `${d.data.label}: ${d.data.value}`);
+}
+
+document.addEventListener('DOMContentLoaded', canMake);

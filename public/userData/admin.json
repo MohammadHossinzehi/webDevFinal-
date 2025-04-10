@@ -17,13 +17,33 @@
       "quantity": "2",
       "category": "Other",
       "expiry": "2025-04-04"
+    },
+    {
+      "name": "Pasta",
+      "quantity": "200g",
+      "category": "Other",
+      "expiry": "2025-04-03"
+    },
+    {
+      "name": "flour",
+      "quantity": "1 bag",
+      "category": "Baking",
+      "expiry": "2025-04-25"
+    },
+    {
+      "name": "water",
+      "quantity": "1 crate",
+      "category": "Other",
+      "expiry": "2025-05-10"
+    },
+    {
+      "name": "cheese",
+      "quantity": "1 slice",
+      "category": "Produce",
+      "expiry": "2025-05-02"
     }
   ],
   "groceryItems": [
-    {
-      "name": "Pasta",
-      "quantity": "200g"
-    },
     {
       "name": "Ice Cream",
       "quantity": "2L"
@@ -110,6 +130,19 @@
         {
           "name": "Pepperoni",
           "quantity": "100g"
+        }
+      ]
+    },
+    {
+      "title": "grilled cheese",
+      "ingredients": [
+        {
+          "name": "bread",
+          "quantity": "1 slice"
+        },
+        {
+          "name": "cheese",
+          "quantity": "1 slice"
         }
       ]
     }
