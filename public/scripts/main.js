@@ -54,7 +54,6 @@ function updateInventory(listType, newItem) {
     });
 }
 
-// Function to send the data to the server
 function updateRecipe(listType, newRecipe) {
   const username = localStorage.getItem("username");
   if (!username) return;
@@ -72,16 +71,20 @@ function updateRecipe(listType, newRecipe) {
   })
     .then((response) => response.json())
     .then((data) => {
+      console.log("Inventory updated:", data);
+
       if (listType === "recipes") {
-        recipeSuggestions = data.updatedInventory.recipes;
-        renderRecipes();
+        recipeSuggestions.push(newRecipe);
+        renderRecipes();                  
       }
+
       renderDashboard();
     })
     .catch((error) => {
       console.error("Error updating recipe:", error);
     });
 }
+
 
 // Show the selected section
 function showSection(target) {
@@ -127,7 +130,6 @@ window.addEventListener("load", () => {
     initial = "dashboard";
   }
   showSection(initial);
-  startClockDisplay();
 });
 
 // Also handle hash change (if user uses browser back/forward)
@@ -148,9 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const itemName = document.getElementById("pantry-item-name").value.trim();
       const itemQty = document.getElementById("pantry-item-qty").value.trim();
-      const itemCategory = document.getElementById(
-        "pantry-item-category"
-      ).value;
+      const itemCategory = document.getElementById("pantry-item-category").value;
+      const itemExpiry = document.getElementById("pantry-item-expiry").value;
 
       if (!itemName || !itemQty || !itemCategory) return;
 
@@ -164,10 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
       updateInventory("pantry", newItem);
     });
 
-  // Grocery form submission
-  document
-    .getElementById("grocery-add-button")
-    .addEventListener("click", (event) => {
+  //Grocery form submission
+  document.getElementById("grocery-add-button").addEventListener("click", (event) => {
       event.preventDefault();
 
       const name = document.getElementById("grocery-item-name").value.trim();
@@ -183,21 +182,15 @@ document.addEventListener("DOMContentLoaded", () => {
       updateInventory("grocery", newItem);
     });
 
-  document
-    .getElementById("recipe-add-button")
-    .addEventListener("click", (event) => {
+  document.getElementById("recipe-add-button").addEventListener("click", (event) => {
       event.preventDefault();
 
       const title = document.getElementById("recipe-title").value.trim();
-      const ingredients = document
-        .getElementById("recipe-ingredients")
-        .value.trim();
+      const ingredients = document.getElementById("recipe-ingredients").value.trim();
 
       if (!title || !ingredients) return;
 
-      const ingredientPairs = ingredients
-        .split(",")
-        .map((entry) => entry.trim());
+      const ingredientPairs = ingredients.split(",").map((entry) => entry.trim());
       const ingredientsArray = ingredientPairs.map((pair) => {
         const [name, quantity] = pair.split(":").map((s) => s.trim());
         return { name, quantity };
@@ -211,20 +204,3 @@ document.addEventListener("DOMContentLoaded", () => {
       updateRecipe("recipes", newRecipe);
     });
 });
-function startClockDisplay() {
-  const clockEl = document.getElementById("current-time");
-  if (!clockEl) return;
-
-  function updateClock() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-    clockEl.textContent = `🕒 Current Time: ${timeString}`;
-  }
-
-  updateClock(); // initial call
-  setInterval(updateClock, 1000); // update every second
-}

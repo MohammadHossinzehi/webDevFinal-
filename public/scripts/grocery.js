@@ -44,6 +44,7 @@ function renderGrocery() {
       console.error("Error loading grocery list:", err);
     });
 }
+
 function updateGrocery(item) {
   fetch("/update-inventory", {
     method: "POST",
@@ -57,7 +58,7 @@ function updateGrocery(item) {
     }),
   })
     .then((res) => res.json())
-    .then((data) => {
+    .then(() => {
       console.log("Item added, refreshing grocery list:", item);
       renderGrocery();
       renderDashboard();
@@ -71,6 +72,7 @@ function addGroceryItem(name, quantity) {
   const newItem = { name, quantity };
   updateGrocery(newItem);
 }
+
 function removeGroceryItem(index) {
   fetch("/remove-item", {
     method: "POST",
@@ -124,41 +126,6 @@ function markItemBought(index) {
       console.error("Error moving item to pantry:", err);
     });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const groceryForm = document.getElementById("grocery-add-form");
-  if (groceryForm) {
-    groceryForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      console.log("hello");
-      console.log("Form submitted!");
-
-      const name = document.getElementById("grocery-item-name").value.trim();
-      const qty = document.getElementById("grocery-item-qty").value.trim();
-
-      if (name && qty) {
-        addGroceryItem(name, qty);
-        document.getElementById("grocery-item-name").value = "";
-        document.getElementById("grocery-item-qty").value = "";
-      }
-    });
-  } else {
-    console.error("grocery-add-form not found in DOM.");
-  }
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  username = localStorage.getItem("username");
-  if (!username) {
-    console.error("Username not set. Redirecting to login...");
-    window.location.href = "/login.html";
-    return;
-  }
-
-  renderPantry();
-  renderGrocery();
-  renderDashboard();
-});
 
 document.addEventListener("DOMContentLoaded", () => {
   const addButton = document.getElementById("grocery-add-button");

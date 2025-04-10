@@ -1,5 +1,4 @@
-// Assume `username` is declared globally after login
-let username = localStorage.getItem("username"); // Or however you're storing the logged-in user
+let username = localStorage.getItem("username"); 
 
 function renderPantry() {
   fetch("/get-inventory", {
@@ -56,13 +55,13 @@ function renderPantry() {
               body: JSON.stringify({
                 username,
                 listType: "pantry",
-                index: index, // Send the index of the item
+                index: index, 
               }),
             })
               .then((res) => res.json())
               .then(() => {
-                renderPantry(); // Refresh from server
-                renderDashboard(); // Refresh dashboard
+                renderPantry(); 
+                renderDashboard(); 
               })
               .catch((err) => {
                 console.error("Error removing item:", err);
@@ -136,11 +135,6 @@ function showEditForm(index) {
         console.error("Error saving edited item:", err);
       });
   });
-}
-
-function addPantryItem(name, quantity, category) {
-  const newItem = { name, quantity, category };
-  updateInventory("pantry", newItem);
 }
 
 // Function to send update to server

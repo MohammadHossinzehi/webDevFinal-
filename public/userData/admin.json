@@ -11,13 +11,15 @@
       "quantity": "1",
       "category": "Other",
       "expiry": "2025-04-07"
+    },
+    {
+      "name": "Mango",
+      "quantity": "2",
+      "category": "Other",
+      "expiry": "2025-04-04"
     }
   ],
   "groceryItems": [
-    {
-      "name": "Mango",
-      "quantity": "2"
-    },
     {
       "name": "Pasta",
       "quantity": "200g"
