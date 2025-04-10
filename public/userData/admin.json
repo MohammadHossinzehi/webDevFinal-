@@ -1,18 +1,6 @@
 {
   "pantryItems": [
     {
-      "name": "Bread",
-      "quantity": "2 Loaves",
-      "category": "Other",
-      "expiry": "2025-04-11"
-    },
-    {
-      "name": "Eggs",
-      "quantity": "1",
-      "category": "Other",
-      "expiry": "2025-04-07"
-    },
-    {
       "name": "Mango",
       "quantity": "2",
       "category": "Other",
@@ -49,10 +37,6 @@
     {
       "name": "Cilantro",
       "quantity": "50g"
-    },
-    {
-      "name": "Tortillas",
-      "quantity": "10"
     }
   ],
   "recipes": [
@@ -133,15 +117,6 @@
         {
           "name": "cheese",
           "quantity": "1 slice"
-        }
-      ]
-    },
-    {
-      "title": "apple juice",
-      "ingredients": [
-        {
-          "name": "apple",
-          "quantity": "1"
         }
       ]
     }
