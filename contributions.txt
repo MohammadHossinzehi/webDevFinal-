@@ -1,4 +1,8 @@
-Justin Lau 100877853: Database, Server, Attaching database to frontend, Node.js
+Justin Lau 100877853: 
+- Created the database
+- Started server functionality
+- Attaching database to frontend
+- Implemented Node.js
 
 Mohammad Hossinzehi 100874512: 
 - Set up and configured the inital project server.
@@ -7,11 +11,22 @@ Mohammad Hossinzehi 100874512:
 - Established a structured data management system by creating and linking user data files to their respective JSON storage
 
 Krishnan Uthayashangar 100896572:
+- Implemented tailwind as a new technology  (UI design)
+- Added functionality to add new recipes
+- Partially reformatted database for recipes
+- Fixed errors in pantry adding, grocery adding, recipe adding, and dynamic dom
+- Code restructuring for clarity (architecture) 
+- Commented basic explanations for functions
 
 Timothy Weathers 100875602:
 - Utilized D3 and SVG to create a pie chart
-- added functionality to dashboard
-- linked and formatted group members page
-- fixed errors in pantry adding, grocery adding, recipe adding, and dynamic dom
+- Added minor functionality to dashboard
+- Linked and formatted group members page
+- Fixed errors in pantry adding, grocery adding, recipe adding, and dynamic dom
+- Recorded submission video
 
-Connor Snelgrove 100826574: Connect frontend to backend via AJAX, Dynamic DOM for adding/editing pantry items, Real-time grocery list updates, Notifications for Expiry date/Expired Items
+Connor Snelgrove 100826574: 
+- Connect frontend to backend via AJAX
+- Dynamic DOM for adding/editing pantry and grocery items
+- Implemented expiry functionality for pantry items
+- Created notifications for close to expiry and low stock

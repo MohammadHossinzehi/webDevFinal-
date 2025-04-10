@@ -23,37 +23,17 @@
         <div class="nav-title">Smart Grocery Tracker</div>
       </div>
       <div class="nav-links">
-        <a
-          href="#dashboard"
-          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
-          >Dashboard</a
-        >
-        <a
-          href="#pantry"
-          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
-          >Pantry Inventory</a
-        >
-        <a
-          href="#grocery"
-          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
-          >Grocery List</a
-        >
-        <a
-          href="#recipes"
-          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
-          >Recipe Suggestions</a
-        >
-        <button
-          onclick="logout()"
-          class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"
-        >
-          Logout
-        </button>
+        <a href="#dashboard" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"> Dashboard</a>
+        <a href="#pantry" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"> Pantry Inventory</a>
+        <a href="#grocery"class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"> Grocery List</a>
+        <a href="#recipes" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"> Recipe Suggestions</a>
+        <button onclick="logout()" class="nav-link transition duration-200 ease-in-out hover:-translate-y-0 hover:scale-125"> Logout </button>
       </div>
     </nav>
 
     <!-- Main content container -->
     <div id="content" class="main-container">
+      
       <!-- Dashboard Section -->
       <section id="dashboard-section">
         <h2 id="welcome-message" class="section-title">Hello!</h2>
@@ -79,7 +59,6 @@
       <!-- Pantry Section -->
       <section id="pantry-section" class="hidden">
         <h2 class="section-title">Pantry Inventory</h2>
-        <!-- Add item form -->
         <form id="pantry-add-form" class="form-container">
           <div class="form-row">
             <div class="form-field">
@@ -126,7 +105,6 @@
             </button>
           </div>
         </form>
-        <!-- Pantry items table -->
         <div class="table-container">
           <table class="styled-table">
             <thead class="table-header">
@@ -147,7 +125,6 @@
       <!-- Grocery Section -->
       <section id="grocery-section" class="hidden">
         <h2 class="section-title">Grocery List</h2>
-        <!-- Add grocery item form -->
         <form id="grocery-add-form" class="form-container">
           <div class="form-row">
             <div class="form-field">
@@ -177,7 +154,6 @@
             </button>
           </div>
         </form>
-        <!-- Grocery items list -->
         <ul id="grocery-list" class="list-container">
         </ul>
       </section>
@@ -185,8 +161,6 @@
       <!-- Recipes Section -->
       <section id="recipes-section" class="hidden">
         <h2 class="section-title">Recipe Suggestions</h2>
-
-        <!-- Add Recipe Form -->
         <form id="recipe-add-form" class="form-container mb-6">
           <h3 class="text-lg font-semibold mb-2">Add New Recipe</h3>
           <div class="form-row">
@@ -220,6 +194,7 @@
         <div id="recipes-container"></div>
       </section>
     </div>
+
     <!-- Client-side Script -->
     <script src="scripts/main.js"></script>
     <script src="scripts/grocery.js"></script>

@@ -5,7 +5,7 @@ let pantryLoaded = false;
 let groceryLoaded = false;
 let recipesLoaded = false;
 
-// Fetch data from JSON file
+//Get data from JSON file
 function fetchData() {
   const username = localStorage.getItem("username");
   return fetch(`userData/${username}.json`)
@@ -23,7 +23,7 @@ function fetchData() {
     });
 }
 
-// Function to send the data to the server
+//Send the data to the server
 function updateInventory(listType, newItem) {
   const username = localStorage.getItem("username");
   if (!username) return;
@@ -53,6 +53,7 @@ function updateInventory(listType, newItem) {
     });
 }
 
+//Similar function for recipe items
 function updateRecipe(listType, newRecipe) {
   const username = localStorage.getItem("username");
   if (!username) return;
@@ -71,7 +72,7 @@ function updateRecipe(listType, newRecipe) {
     .then((response) => response.json())
     .then((data) => {
       console.log("Inventory updated:", data);
-
+      //Key difference here in how it sends
       if (listType === "recipes") {
         recipeSuggestions.push(newRecipe);
         renderRecipes();                  
@@ -84,6 +85,7 @@ function updateRecipe(listType, newRecipe) {
     });
 }
 
+//Helper function for page viewing
 function showSection(target) {
   document.querySelectorAll("#content section").forEach((sec) => {
     sec.classList.add("hidden");
@@ -117,9 +119,8 @@ function showSection(target) {
   }
 }
 
-// Initialize default view on page load
+//Set up default view on page load
 window.addEventListener("load", () => {
-  // Show section based on URL hash, default to dashboard
   let initial = window.location.hash
     ? window.location.hash.substring(1)
     : "dashboard";
@@ -129,7 +130,6 @@ window.addEventListener("load", () => {
   showSection(initial);
 });
 
-// Also handle hash change (if user uses browser back/forward)
 window.addEventListener("hashchange", () => {
   const target = window.location.hash.substring(1);
   if (target) {
@@ -137,9 +137,10 @@ window.addEventListener("hashchange", () => {
   }
 });
 
-// Wait until the DOM is fully loaded before attaching event listeners
+//Attach event listeners after DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
-  // Pantry form submission
+  
+  //Pantry form submission
   document
     .getElementById("pantry-add-button")
     .addEventListener("click", (event) => {
@@ -178,7 +179,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateInventory("grocery", newItem);
     });
-
+  
+  //Recipe form submission  
   document.getElementById("recipe-add-button").addEventListener("click", (event) => {
       event.preventDefault();
 

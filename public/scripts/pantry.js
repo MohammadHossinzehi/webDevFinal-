@@ -1,5 +1,6 @@
 let username = localStorage.getItem("username"); 
 
+//Load all pantry items currently in the user's JSON
 function renderPantry() {
   fetch("/get-inventory", {
     method: "POST",
@@ -75,6 +76,7 @@ function renderPantry() {
     });
 }
 
+//Show the form to edit a pantry items
 function showEditForm(index) {
   const item = pantryItems[index];
   const tbody = document.getElementById("pantry-table-body");
@@ -114,7 +116,6 @@ function showEditForm(index) {
       expiry: document.getElementById(`edit-exp-${index}`).value,
     };
 
-    // First, remove the original item
     fetch("/remove-item", {
       method: "POST",
       headers: {
@@ -128,36 +129,10 @@ function showEditForm(index) {
     })
       .then((res) => res.json())
       .then(() => {
-        // Then add the updated item
         updateInventory("pantry", updatedItem);
       })
       .catch((err) => {
         console.error("Error saving edited item:", err);
       });
   });
-}
-
-// Function to send update to server
-function updateInventory(listType, item) {
-  fetch("/update-inventory", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      listType,
-      item,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      pantryItems.push(item); // OR refetch pantry if needed
-      renderPantry();
-      canMake();
-      renderDashboard();
-    })
-    .catch((err) => {
-      console.error("Error updating inventory:", err);
-    });
 }

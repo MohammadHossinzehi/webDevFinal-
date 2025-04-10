@@ -1,3 +1,4 @@
+//Load all groceries currently in the user's JSON
 function renderGrocery() {
   fetch("/get-inventory", {
     method: "POST",
@@ -44,34 +45,13 @@ function renderGrocery() {
     });
 }
 
-function updateGrocery(item) {
-  fetch("/update-inventory", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      listType: "grocery",
-      item,
-    }),
-  })
-    .then((res) => res.json())
-    .then(() => {
-      console.log("Item added, refreshing grocery list:", item);
-      renderGrocery();
-      renderDashboard();
-    })
-    .catch((err) => {
-      console.error("Error updating grocery inventory:", err);
-    });
-}
-
+//Format input for the JSON
 function addGroceryItem(name, quantity) {
   const newItem = { name, quantity };
-  updateGrocery(newItem);
+  updateInventory("grocery", newItem);
 }
 
+//Delete groceries from the JSON
 function removeGroceryItem(index) {
   fetch("/remove-item", {
     method: "POST",
@@ -94,11 +74,11 @@ function removeGroceryItem(index) {
     });
 }
 
+//Move grocery item to the pantry
 function markItemBought(index) {
   const item = groceryItems[index];
   if (!item) return;
 
-  // First, add the item to the pantry
   const pantryItem = {
     name: item.name,
     quantity: item.quantity,
@@ -125,6 +105,7 @@ function markItemBought(index) {
     });
 }
 
+//Event listenter to call addGrocery on button click 
 document.addEventListener("DOMContentLoaded", () => {
   const addButton = document.getElementById("grocery-add-button");
 

@@ -1,3 +1,4 @@
+//Load all dashboard items currently in the user's JSON (using the other page items)
 function renderDashboard() {
   const statsContainer = document.getElementById("dashboard-stats");
   statsContainer.innerHTML = "";
@@ -90,10 +91,12 @@ function renderDashboard() {
   }
 }
 
+//Get data and create available recipes chart
 async function canMake() {
   let recipes = [];
   let pantryItems = [];
 
+  //Get data
   try {
     const response = await fetch("/get-inventory", {
       method: "POST",
@@ -113,6 +116,7 @@ async function canMake() {
     return;
   }
  
+  //Compile data
   let canMake = 0;
   recipes.forEach((recipe) => {
     let canMakeRecipe = true;
@@ -125,6 +129,7 @@ async function canMake() {
     if (canMakeRecipe) canMake++;
   });
   
+  //Making D3 chart with SVG
   const cantMake = recipes.length - canMake;
 
   const chartData = [
@@ -166,4 +171,5 @@ async function canMake() {
     .text((d) => `${d.data.label}: ${d.data.value}`);
 }
 
+//Event listener on page load
 document.addEventListener('DOMContentLoaded', canMake);

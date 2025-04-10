@@ -1,3 +1,4 @@
+//Load all recipes currently in the user's JSON
 function renderRecipes() {
   const container = document.getElementById("recipes-container");
   container.innerHTML = "";

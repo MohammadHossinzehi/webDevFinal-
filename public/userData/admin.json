@@ -119,6 +119,19 @@
           "quantity": "1 slice"
         }
       ]
+    },
+    {
+      "title": "Hot Choclate",
+      "ingredients": [
+        {
+          "name": "Milk",
+          "quantity": "1 cup"
+        },
+        {
+          "name": "Cocoa Powder",
+          "quantity": "2 tbsp"
+        }
+      ]
     }
   ],
   "username": "admin"

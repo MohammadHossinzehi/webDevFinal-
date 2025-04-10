@@ -1,3 +1,4 @@
+//Check if user is logged in
 if (
   !localStorage.getItem("isLoggedIn") &&
   !window.location.pathname.includes("login.html")
@@ -5,6 +6,7 @@ if (
   window.location.href = "/login.html";
 }
 
+//Use ther username to load a message and create a JSON
 if (username) {
   const welcomeElement = document.getElementById("welcome-message");
   if (welcomeElement) {
@@ -14,6 +16,7 @@ if (username) {
   createUserDataFile(username);
 }
 
+//Default recipes for the user
 function createUserDataFile(username) {
   const defaultData = {
     pantryItems: [],
@@ -101,6 +104,7 @@ function createUserDataFile(username) {
     .catch((err) => console.error("Create file error:", err));
 }
 
+//Logout of current user
 function logout() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("username");

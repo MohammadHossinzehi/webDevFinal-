@@ -6,7 +6,7 @@ const { exec } = require("child_process");
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, "public");
 
-// Helper: Determine Content Type
+//Determine Content Type
 function getContentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   const map = {
@@ -25,7 +25,7 @@ function getContentType(filePath) {
 const server = http.createServer((req, res) => {
   const requestPath = req.url.split("?")[0];
 
-  // /api/create-user-file
+  //create-user-file
   if (req.method === "POST" && requestPath === "/api/create-user-file") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -61,7 +61,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // /api/login
+  //login
   if (req.method === "POST" && requestPath === "/api/login") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -93,7 +93,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // /api/signup
+  //signup
   if (req.method === "POST" && requestPath === "/api/signup") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -140,7 +140,7 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-  // /get-inventory
+  //get-inventory
   if (req.method === "POST" && requestPath === "/get-inventory") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -185,7 +185,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // /remove-item
+  //remove-item
   if (req.method === "POST" && requestPath === "/remove-item") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -269,7 +269,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // /update-inventory
+  //update-inventory
   if (req.method === "POST" && requestPath === "/update-inventory") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -345,7 +345,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Serve static files
+  //Serve static files
   const filePath = path.join(
     publicDir,
     requestPath === "/" || requestPath === "" ? "/index.html" : requestPath
