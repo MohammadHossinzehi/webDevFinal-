@@ -9,5 +9,9 @@ Mohammad Hossinzehi 100874512:
 Krishnan Uthayashangar 100896572:
 
 Timothy Weathers 100875602:
+- Utilized D3 and SVG to create a pie chart
+- added functionality to dashboard
+- linked and formatted group members page
+- fixed errors in pantry adding, grocery adding, and recipe adding and dynamic dom
 
 Connor Snelgrove 100826574: Connect frontend to backend via AJAX, Dynamic DOM for adding/editing pantry items, Real-time grocery list updates, Notifications for Expiry date/Expired Items
