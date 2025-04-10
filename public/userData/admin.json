@@ -35,19 +35,9 @@
       "quantity": "1 crate",
       "category": "Other",
       "expiry": "2025-05-10"
-    },
-    {
-      "name": "cheese",
-      "quantity": "1 slice",
-      "category": "Produce",
-      "expiry": "2025-05-02"
     }
   ],
   "groceryItems": [
-    {
-      "name": "Ice Cream",
-      "quantity": "2L"
-    },
     {
       "name": "Sour Cream",
       "quantity": "350ml"

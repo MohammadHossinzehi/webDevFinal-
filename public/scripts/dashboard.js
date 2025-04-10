@@ -113,15 +113,11 @@ async function canMake() {
     return;
   }
  
-  const pantrySet = new Set(pantryItems);
   let canMake = 0;
-
   recipes.forEach((recipe) => {
     let canMakeRecipe = true;
     recipe.ingredients.forEach((ingredient) => {
-      const foundInPantry = pantryItems.some((item) => 
-        item.name.toLowerCase() === ingredient.name.toLowerCase()
-      );
+      const foundInPantry = pantryItems.some((item) => item.name.toLowerCase() === ingredient.name.toLowerCase());
       if (!foundInPantry) {
         canMakeRecipe = false;
       }
@@ -143,8 +139,7 @@ async function canMake() {
   const svg = d3.select("#pieChart");
   svg.selectAll("*").remove();
 
-  const g = svg
-    .append("g")
+  const g = svg.append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
   const color = d3.scaleOrdinal()
@@ -167,7 +162,7 @@ async function canMake() {
     .attr("transform", (d) => `translate(${arc.centroid(d)})`)
     .attr("text-anchor", "middle")
     .attr("fill", "#fff")
-    .attr("font-size", "14px")
+    .attr("font-size", "16px")
     .text((d) => `${d.data.label}: ${d.data.value}`);
 }
 
