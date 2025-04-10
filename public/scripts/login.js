@@ -1,4 +1,3 @@
-// loginRoute.js or in your main server file
 import express from "express";
 import fs from "fs/promises";
 const router = express.Router();
@@ -7,8 +6,8 @@ router.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const data = await fs.readFile("login.json", "utf-8"); // adjust path if needed
-    const users = JSON.parse(data); // users is a JS object acting like a hashmap
+    const data = await fs.readFile("login.json", "utf-8"); 
+    const users = JSON.parse(data); 
 
     if (users[username] && users[username] === password) {
       res.sendStatus(200); // success

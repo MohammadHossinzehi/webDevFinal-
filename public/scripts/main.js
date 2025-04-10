@@ -1,4 +1,3 @@
-// State variables
 let pantryItems = [];
 let groceryItems = [];
 let recipeSuggestions = [];
@@ -85,8 +84,6 @@ function updateRecipe(listType, newRecipe) {
     });
 }
 
-
-// Show the selected section
 function showSection(target) {
   document.querySelectorAll("#content section").forEach((sec) => {
     sec.classList.add("hidden");

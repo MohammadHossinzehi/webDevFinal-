@@ -20,30 +20,72 @@ function createUserDataFile(username) {
     groceryItems: [],
     recipes: [
       {
-        title: "Pancakes",
-        ingredients: ["Flour", "Eggs", "Milk", "Sugar", "Butter"],
+        "title": "Pancakes",
+        "ingredients": [
+          {
+            "name": "Flour",
+            "quantity": "1 cup"
+          },
+          {
+            "name": "Water",
+            "quantity": "2 cups"
+          }
+        ]
       },
       {
-        title: "Spaghetti Bolognese",
-        ingredients: [
-          "Spaghetti Pasta",
-          "Ground Beef",
-          "Tomato Sauce",
-          "Onion",
-          "Olive Oil",
-          "Salt",
-        ],
+        "title": "Carbonara",
+        "ingredients": [
+          {
+            "name": "Spaghetti",
+            "quantity": "400g"
+          },
+          {
+            "name": "Olive oil",
+            "quantity": "1tbsp"
+          },
+          {
+            "name": "Smoked Pancetta",
+            "quantity": "200g"
+          },
+          {
+            "name": "Garlic cloves",
+            "quantity": "2"
+          },
+          {
+            "name": "Eggs",
+            "quantity": "3"
+          },
+          {
+            "name": "Cream",
+            "quantity": "75ml"
+          },
+          {
+            "name": "Parmesan",
+            "quantity": "50g"
+          }
+        ]
       },
       {
-        title: "Chicken Stir Fry",
-        ingredients: [
-          "Chicken Breast",
-          "Broccoli",
-          "Bell Pepper",
-          "Soy Sauce",
-          "Salt",
-        ],
-      },
+        "title": "Pepperoni Pizza",
+        "ingredients": [
+          {
+            "name": "Pizza Dough",
+            "quantity": "500g"
+          },
+          {
+            "name": "Tomato Sauce",
+            "quantity": "200g"
+          },
+          {
+            "name": "Mozzarella Cheese",
+            "quantity": "300g"
+          },
+          {
+            "name": "Pepperoni",
+            "quantity": "100g"
+          }
+        ]
+      }
     ],
   };
 

@@ -1,4 +1,3 @@
-// Function to render grocery items
 function renderGrocery() {
   fetch("/get-inventory", {
     method: "POST",
@@ -119,7 +118,6 @@ function markItemBought(index) {
   })
     .then((res) => res.json())
     .then(() => {
-      // After pantry update succeeds, remove from grocery
       removeGroceryItem(index);
     })
     .catch((err) => {

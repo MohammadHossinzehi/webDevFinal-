@@ -135,6 +135,15 @@
           "quantity": "1 slice"
         }
       ]
+    },
+    {
+      "title": "apple juice",
+      "ingredients": [
+        {
+          "name": "apple",
+          "quantity": "1"
+        }
+      ]
     }
   ],
   "username": "admin"
